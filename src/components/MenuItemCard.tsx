@@ -7,7 +7,8 @@ import { BASE_PATH } from "@/lib/base-path";
 import type { MenuItem } from "@/data/menu";
 
 export function MenuItemCard({ item }: { item: MenuItem }) {
-  const { addItem } = useCart();
+  const { lines, addItem, setQuantity } = useCart();
+  const quantity = lines.find((line) => line.item.id === item.id)?.quantity ?? 0;
 
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface">
@@ -37,13 +38,37 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
           <span className="font-display text-lg text-foreground">
             {item.price} ₽
           </span>
-          <button
-            type="button"
-            onClick={() => addItem(item)}
-            className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
-          >
-            В корзину
-          </button>
+          {quantity > 0 ? (
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setQuantity(item.id, quantity - 1)}
+                className="h-7 w-7 rounded-full border border-border text-sm text-foreground hover:border-primary"
+                aria-label="Уменьшить количество"
+              >
+                −
+              </button>
+              <span className="w-4 text-center text-sm font-medium text-foreground">
+                {quantity}
+              </span>
+              <button
+                type="button"
+                onClick={() => setQuantity(item.id, quantity + 1)}
+                className="h-7 w-7 rounded-full border border-border text-sm text-foreground hover:border-primary"
+                aria-label="Увеличить количество"
+              >
+                +
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => addItem(item)}
+              className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
+            >
+              В корзину
+            </button>
+          )}
         </div>
       </div>
     </div>
