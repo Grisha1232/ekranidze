@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { PlaceholderImage } from "@/components/PlaceholderImage";
 import { useCart } from "@/context/CartContext";
+import { BASE_PATH } from "@/lib/base-path";
 import type { MenuItem } from "@/data/menu";
 
 export function MenuItemCard({ item }: { item: MenuItem }) {
@@ -13,7 +14,7 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
       {item.image ? (
         <div className="relative h-36 w-full">
           <Image
-            src={item.image}
+            src={`${BASE_PATH}${item.image}`}
             alt={item.name}
             fill
             sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw"

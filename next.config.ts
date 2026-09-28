@@ -15,6 +15,13 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  // `images.unoptimized` makes next/image render `src` as-is, so it does NOT
+  // get the automatic basePath prefix `next/image` normally adds — public/
+  // asset paths built by hand (see src/lib/base-path.ts) need this at
+  // runtime to resolve under GitHub Pages' /ekranidze/ subpath.
+  env: {
+    NEXT_PUBLIC_BASE_PATH: isGithubPagesBuild ? repoBasePath : "",
+  },
 };
 
 export default nextConfig;
