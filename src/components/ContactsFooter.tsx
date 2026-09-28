@@ -1,6 +1,31 @@
+// Coordinates + org id taken from the client's Yandex Maps listing
+// (https://yandex.ru/maps/org/169306513048) — update if the location changes.
+const MAP_EMBED_SRC =
+  "https://yandex.ru/map-widget/v1/?ll=37.865337%2C55.687918&z=16&pt=37.865337%2C55.687918%2Cpm2rdl";
+
 export function ContactsFooter() {
   return (
     <footer id="contacts" className="border-t border-border bg-surface">
+      <div className="mx-auto max-w-6xl px-4 pt-16 sm:px-6">
+        <div className="mb-8 flex flex-col gap-2">
+          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Контакты
+          </span>
+          <h2 className="font-display text-3xl text-foreground">Как до нас добраться</h2>
+        </div>
+
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <iframe
+            src={MAP_EMBED_SRC}
+            title="Карта — как добраться до ресторана «Экранидзе»"
+            width="100%"
+            height="360"
+            loading="lazy"
+            className="block"
+          />
+        </div>
+      </div>
+
       <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 sm:px-6 md:grid-cols-3">
         <div>
           <p className="font-display text-lg text-foreground">Экранидзе</p>
@@ -22,7 +47,7 @@ export function ContactsFooter() {
             href="https://yandex.ru/maps/org/169306513048"
             className="mt-1 block text-sm text-muted-foreground hover:text-foreground"
           >
-            Как доехать
+            Открыть в Яндекс Картах
           </a>
         </div>
 
