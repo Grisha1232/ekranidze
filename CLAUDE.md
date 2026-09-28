@@ -25,6 +25,13 @@ partner API (which is one-way POS→Yandex.Eda and can't accept orders from an e
 
 There is no test suite yet.
 
+The build is a static export (`output: "export"` in `next.config.ts`, no server
+routes/actions in the app) — `npm run build` writes plain HTML/CSS/JS to `out/`.
+`GITHUB_PAGES=true npm run build` additionally prefixes every asset with
+`/khinkali-dom` (the repo's GitHub Pages subpath); leave that env var unset for
+local builds or any host serving the site from its domain root. Deploys to GitHub
+Pages automatically via `.github/workflows/deploy-pages.yml` on every push to `main`.
+
 ## Architecture
 
 - **Single-page app.** `src/app/page.tsx` composes the whole homepage from section
