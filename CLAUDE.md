@@ -1,0 +1,65 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+@AGENTS.md
+
+## What this is
+
+Marketing site for "Хинкали Дом" (khinkali/pelmeni delivery business, Russian-language,
+Russia/CIS market). All business content (name, menu, prices, address, phone) is
+**placeholder** — replace before launch. The cart is intentionally a stub: it holds
+state client-side and never sends a network request. See the published delivery-research
+artifact (linked in conversation history) for the plan on how ordering should eventually
+work — short version: real orders currently go through Yandex.Eda directly, not this
+site; the recommended path to a functional cart is Yandex Delivery's API (separate,
+free-to-integrate product from the Yandex.Eda marketplace listing), not the Yandex.Eda
+partner API (which is one-way POS→Yandex.Eda and can't accept orders from an external site).
+
+## Commands
+
+- `npm run dev` — start the dev server (Turbopack)
+- `npm run build` — production build (also runs the TypeScript check — treat a failing
+  build as a type error, not just a bundling issue)
+- `npm run lint` — ESLint (flat config, `eslint.config.mjs`)
+
+There is no test suite yet.
+
+## Architecture
+
+- **Single-page app.** `src/app/page.tsx` composes the whole homepage from section
+  components in `src/components/` (`Header`, `Hero`, `MenuSection`, `AboutSection`,
+  `DeliverySection`, `ContactsFooter`, `CartDrawer`). Nav links are same-page anchors
+  (`#menu`, `#about`, `#delivery`, `#contacts`), not routes.
+- **Cart state** lives in `src/context/CartContext.tsx` (`CartProvider` wraps the app
+  in `layout.tsx`). It's client-only React state persisted to `localStorage` under
+  `khinkali-dom:cart`, with no backend calls anywhere in the chain — `CartDrawer`'s
+  "Оформить заказ" button just reveals a stub notice. Don't wire it to a real
+  checkout without also revisiting the delivery-fulfillment approach above.
+- **Menu content** is static data in `src/data/menu.ts` (`categories` + `menuItems`),
+  filtered client-side by `MenuSection`. No CMS/API — editing content means editing this file.
+- **No real photos yet.** `PlaceholderImage` renders a gradient block (by `tone`:
+  `warm` / `clay` / `olive`) instead of an image. Swap for `next/image` once real
+  photography exists.
+- **Styling is Tailwind v4**, config-free — theme tokens are CSS custom properties in
+  `src/app/globals.css` (`--primary`, `--accent`, `--background`, `--border`, etc.)
+  exposed to Tailwind via `@theme inline`. There is no `tailwind.config.js`; add new
+  design tokens in `globals.css`, not a config file.
+- **Fonts** are loaded via `next/font/google` in `layout.tsx`: Playfair Display
+  (display/headings) + Manrope (body). Both were picked specifically because they
+  ship a `cyrillic` subset — this site's copy is Russian. Not every Google font does
+  (e.g. Fraunces doesn't); before adding a new font, check
+  `node_modules/next/dist/compiled/@next/font/dist/google/font-data.json` for its
+  `subsets`, or the build will fail TypeScript checking on the `subsets` array.
+
+## Working in this repo
+
+This project pins a pre-release Next.js (see `package.json`); `AGENTS.md` at the repo
+root (auto-generated/refreshed by `next dev` — don't hand-edit it, edit is a no-op)
+warns that App Router APIs and conventions may differ from training-data Next.js.
+When something behaves unexpectedly, check `node_modules/next/dist/docs/` before
+assuming a remembered API shape is correct. One instance already hit: the bundled
+`eslint-plugin-react-hooks` flags `react-hooks/set-state-in-effect` more aggressively
+than usual, including the standard "hydrate state from `localStorage` on mount"
+pattern (see the disable comment in `CartContext.tsx` for why it's a deliberate,
+justified exception there).

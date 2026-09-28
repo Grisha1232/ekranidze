@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+:root {
+  /* Warm beige palette — restrained, "signboard beige" instead of prokhinkali's orange */
+  --background: #faf6ef;
+  --surface: #fffdf9;
+  --foreground: #2c241c;
+  --muted-foreground: #6f5f4d;
+  --border: #e6dac6;
+
+  --primary: #b08a5e;
+  --primary-hover: #9c774c;
+  --primary-foreground: #fffdf9;
+
+  --accent: #7c5c3e;
+  --accent-foreground: #fffdf9;
+
+  --success: #6b7f5b;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-foreground: var(--foreground);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-success: var(--success);
+
+  --font-sans: var(--font-body);
+  --font-display: var(--font-display);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
