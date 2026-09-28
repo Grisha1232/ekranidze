@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Manrope, Playfair_Display } from "next/font/google";
+import { Manrope, Noto_Serif_Georgian, Playfair_Display } from "next/font/google";
 import { CartProvider } from "@/context/CartContext";
 import "./globals.css";
 
@@ -14,17 +14,26 @@ const displayFont = Playfair_Display({
   weight: ["600", "700"],
 });
 
+// Real Georgian (mkhedruli) glyphs, for whatever Georgian-script text/accent
+// gets added — see the `font-georgian` utility in globals.css. Unused until
+// then, so it costs nothing yet.
+const georgianFont = Noto_Serif_Georgian({
+  variable: "--font-georgian",
+  subsets: ["georgian"],
+  weight: ["500", "600"],
+});
+
 export const metadata: Metadata = {
-  title: "Хинкали Дом — домашние хинкали и пельмени с доставкой",
+  title: "Экранидзе — грузинская кухня в Люберцах",
   description:
-    "Хинкали Дом — лепим хинкали и пельмени вручную каждый день. Доставка и самовывоз.",
+    "Экранидзе — хинкали, хачапури и другие блюда грузинской кухни по традиционным рецептам. Ресторан в Люберцах, самовывоз и доставка.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="ru"
-      className={`${bodyFont.variable} ${displayFont.variable} h-full antialiased`}
+      className={`${bodyFont.variable} ${displayFont.variable} ${georgianFont.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
         <CartProvider>{children}</CartProvider>

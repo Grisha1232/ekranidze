@@ -14,7 +14,10 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
         <h3 className="font-display text-base font-semibold text-foreground">
           {item.name}
         </h3>
-        <p className="flex-1 text-sm text-muted-foreground">{item.description}</p>
+        {item.description && (
+          <p className="text-sm text-muted-foreground">{item.description}</p>
+        )}
+        <div className="flex-1" />
         <p className="text-xs text-muted-foreground">{item.weight}</p>
         <div className="mt-2 flex items-center justify-between">
           <span className="font-display text-lg text-foreground">

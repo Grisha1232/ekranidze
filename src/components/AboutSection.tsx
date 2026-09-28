@@ -1,7 +1,18 @@
 const STATS = [
-  { value: "5+", label: "лет на районе" },
-  { value: "300", label: "хинкали лепим в день" },
-  { value: "20", label: "блюд в меню" },
+  { value: "4.8", label: "рейтинг на Яндекс Картах" },
+  { value: "45+", label: "блюд в меню" },
+  { value: "9", label: "категорий меню" },
+];
+
+const AMENITIES = [
+  "Детское меню",
+  "Летняя веранда",
+  "Wi-Fi",
+  "Можно с собакой",
+  "Оплата картой",
+  "Кофе и чай навынос",
+  "Спортивные трансляции",
+  "Проектор для мероприятий",
 ];
 
 export function AboutSection() {
@@ -14,12 +25,17 @@ export function AboutSection() {
               О нас
             </span>
             <h2 className="font-display text-3xl text-foreground">
-              Небольшая хинкальная с открытой кухней
+              Уголок Грузии в Люберцах
             </h2>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              Начинали с одной вывески во дворе — текст-заглушка про историю
-              бизнеса, основателей и подход к продуктам. Замените этот блок
-              настоящей историей, фотографиями кухни и командой.
+              Готовим по традиционным грузинским рецептам — от хачапури
+              по-аджарски до наваристого харчо. Стараемся брать свежие
+              сезонные продукты и держать в меню и классику, и домашние
+              блюда, которые не встретишь в обычном ресторане.
+            </p>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              Внутри — тёплая, семейная атмосфера: сюда приходят и на ужин
+              с детьми, и посидеть с друзьями на веранде летним вечером.
             </p>
           </div>
 
@@ -38,6 +54,17 @@ export function AboutSection() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="mt-10 flex flex-wrap gap-2">
+          {AMENITIES.map((item) => (
+            <span
+              key={item}
+              className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground"
+            >
+              {item}
+            </span>
+          ))}
         </div>
       </div>
     </section>

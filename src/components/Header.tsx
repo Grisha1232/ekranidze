@@ -13,7 +13,7 @@ export function Header() {
     <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
         <Link href="#" className="font-display text-xl font-semibold text-foreground">
-          Хинкали Дом
+          Экранидзе
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm font-medium text-muted-foreground md:flex">
@@ -30,10 +30,10 @@ export function Header() {
 
         <div className="flex items-center gap-3">
           <a
-            href="tel:+70000000000"
+            href="tel:+79015137196"
             className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:inline"
           >
-            +7 (000) 000-00-00
+            +7 901 513-71-96
           </a>
           <CartButton />
         </div>

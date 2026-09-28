@@ -36,6 +36,7 @@
 
   --font-sans: var(--font-body);
   --font-display: var(--font-display);
+  --font-georgian: var(--font-georgian);
 }
 
 body {
