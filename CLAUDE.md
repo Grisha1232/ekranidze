@@ -34,13 +34,11 @@ There is no test suite yet.
 The build is a static export (`output: "export"` in `next.config.ts`, no server
 routes/actions in the app) — `npm run build` writes plain HTML/CSS/JS to `out/`.
 `GITHUB_PAGES=true npm run build` additionally prefixes every asset with
-`/khinkali-dom` (the repo's GitHub Pages subpath — the GitHub repo, deployed URL,
-and `basePath` in `next.config.ts` still use the project's original working name;
-only the on-site business content was updated to "Экранидзе". Renaming the repo
-would break the live Pages URL, so that's a deliberate separate decision, not an
-oversight). Leave `GITHUB_PAGES` unset for local builds or any host serving the
-site from its domain root. Deploys to GitHub Pages automatically via
-`.github/workflows/deploy-pages.yml` on every push to `main`.
+`/ekranidze` (the repo's GitHub Pages subpath, matching the GitHub repo name —
+keep `repoBasePath` in `next.config.ts` in sync if the repo is ever renamed
+again, or every asset 404s). Leave `GITHUB_PAGES` unset for local builds or any
+host serving the site from its domain root. Deploys to GitHub Pages
+automatically via `.github/workflows/deploy-pages.yml` on every push to `main`.
 
 ## Architecture
 
