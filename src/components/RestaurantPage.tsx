@@ -18,12 +18,12 @@ export function RestaurantPage({ restaurant }: { restaurant: Restaurant }) {
       )}
       <main className="flex-1">
         <Hero restaurant={restaurant} />
-        <MenuSection />
+        <MenuSection restaurantId={restaurant.id} />
         <AboutSection restaurant={restaurant} />
         <DeliverySection />
       </main>
       <ContactsFooter restaurant={restaurant} />
-      <CartDrawer />
+      <CartDrawer restaurantId={restaurant.id} />
     </div>
   );
 }

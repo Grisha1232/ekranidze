@@ -1,12 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 
-export function CartDrawer() {
-  const { lines, isOpen, closeCart, setQuantity, removeItem, totalPrice } =
-    useCart();
-  const [showStubNotice, setShowStubNotice] = useState(false);
+export function CartDrawer({ restaurantId }: { restaurantId: string }) {
+  const { lines: allLines, isOpen, closeCart, setQuantity, removeItem } = useCart();
+  const lines = allLines.filter((line) => line.restaurantId === restaurantId);
+  const totalPrice = lines.reduce(
+    (sum, line) => sum + line.quantity * line.item.price,
+    0,
+  );
 
   return (
     <>
@@ -57,7 +60,7 @@ export function CartDrawer() {
                       <button
                         type="button"
                         onClick={() =>
-                          setQuantity(line.item.id, line.quantity - 1)
+                          setQuantity(line.item.id, restaurantId, line.quantity - 1)
                         }
                         className="h-7 w-7 rounded-full border border-border text-sm hover:border-primary"
                         aria-label="Уменьшить количество"
@@ -70,7 +73,7 @@ export function CartDrawer() {
                       <button
                         type="button"
                         onClick={() =>
-                          setQuantity(line.item.id, line.quantity + 1)
+                          setQuantity(line.item.id, restaurantId, line.quantity + 1)
                         }
                         className="h-7 w-7 rounded-full border border-border text-sm hover:border-primary"
                         aria-label="Увеличить количество"
@@ -79,7 +82,7 @@ export function CartDrawer() {
                       </button>
                       <button
                         type="button"
-                        onClick={() => removeItem(line.item.id)}
+                        onClick={() => removeItem(line.item.id, restaurantId)}
                         className="ml-auto text-xs text-muted-foreground underline-offset-2 hover:underline"
                       >
                         Удалить
@@ -103,21 +106,22 @@ export function CartDrawer() {
             </span>
           </div>
 
-          <button
-            type="button"
-            disabled={lines.length === 0}
-            onClick={() => setShowStubNotice(true)}
-            className="w-full rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Оформить заказ
-          </button>
-
-          {showStubNotice && (
-            <p className="mt-3 rounded-lg bg-background px-3 py-2 text-xs text-muted-foreground">
-              Онлайн-оформление скоро заработает. Пока принимаем заказы по
-              телефону +7 (000) 000-00-00 — эта корзина ничего никуда не
-              отправляет.
-            </p>
+          {lines.length === 0 ? (
+            <button
+              type="button"
+              disabled
+              className="w-full cursor-not-allowed rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground opacity-40"
+            >
+              Оформить заказ
+            </button>
+          ) : (
+            <Link
+              href={`/checkout?restaurant=${restaurantId}`}
+              onClick={closeCart}
+              className="block w-full rounded-full bg-primary px-5 py-3 text-center text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
+            >
+              Оформить заказ
+            </Link>
           )}
         </div>
       </aside>

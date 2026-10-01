@@ -5,7 +5,7 @@ export function Hero({ restaurant }: { restaurant: Restaurant }) {
   const slides = restaurants.map((r) => ({
     id: r.id,
     label: r.shortLabel,
-    georgianName: r.georgianName,
+    name: r.name,
     tone: r.tone,
   }));
 

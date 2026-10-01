@@ -4,7 +4,7 @@ import { useState } from "react";
 import { MenuItemCard } from "@/components/MenuItemCard";
 import { categories, menuItems } from "@/data/menu";
 
-export function MenuSection() {
+export function MenuSection({ restaurantId }: { restaurantId: string }) {
   const [activeCategory, setActiveCategory] = useState(categories[0].id);
   const items = menuItems.filter((item) => item.categoryId === activeCategory);
 
@@ -36,7 +36,7 @@ export function MenuSection() {
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((item) => (
-          <MenuItemCard key={item.id} item={item} />
+          <MenuItemCard key={item.id} item={item} restaurantId={restaurantId} />
         ))}
       </div>
     </section>

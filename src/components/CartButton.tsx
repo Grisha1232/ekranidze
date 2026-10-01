@@ -2,8 +2,11 @@
 
 import { useCart } from "@/context/CartContext";
 
-export function CartButton() {
-  const { totalCount, openCart } = useCart();
+export function CartButton({ restaurantId }: { restaurantId: string }) {
+  const { lines, openCart } = useCart();
+  const totalCount = lines
+    .filter((line) => line.restaurantId === restaurantId)
+    .reduce((sum, line) => sum + line.quantity, 0);
 
   return (
     <button

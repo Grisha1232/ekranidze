@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Manrope, Noto_Serif_Georgian, Playfair_Display } from "next/font/google";
+import { Manrope, Playfair_Display } from "next/font/google";
+import localFont from "next/font/local";
 import { CartProvider } from "@/context/CartContext";
 import "./globals.css";
 
@@ -14,13 +15,15 @@ const displayFont = Playfair_Display({
   weight: ["600", "700"],
 });
 
-// Real Georgian (mkhedruli) glyphs, for whatever Georgian-script text/accent
-// gets added — see the `font-georgian` utility in globals.css. Unused until
-// then, so it costs nothing yet.
-const georgianFont = Noto_Serif_Georgian({
+// Self-hosted (not a Google Font): "ruGeorgian" by Baton Talbone, styles
+// Cyrillic letterforms to look Georgian — used for the restaurant-branding
+// logo/switcher text. Font file + copyright notice in src/fonts/; the
+// source has no stated license beyond a bare copyright line (see
+// rugeorgian-COPYRIGHT.txt) — used here on the client's explicit call.
+const georgianFont = localFont({
+  src: "../fonts/rugeorgian.ttf",
   variable: "--font-georgian",
-  subsets: ["georgian"],
-  weight: ["500", "600"],
+  weight: "400",
 });
 
 export const metadata: Metadata = {

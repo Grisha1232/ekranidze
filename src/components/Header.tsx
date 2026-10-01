@@ -19,14 +19,13 @@ export function Header({ restaurant }: { restaurant: Restaurant }) {
               {i > 0 && <span className="text-border">·</span>}
               <Link
                 href={r.path}
-                aria-label={r.name}
                 className={
                   r.id === restaurant.id
                     ? "font-georgian text-xl font-semibold text-foreground"
                     : "font-georgian text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                 }
               >
-                {r.georgianName}
+                {r.name}
               </Link>
             </span>
           ))}
@@ -51,7 +50,7 @@ export function Header({ restaurant }: { restaurant: Restaurant }) {
           >
             {restaurant.phone}
           </a>
-          <CartButton />
+          <CartButton restaurantId={restaurant.id} />
         </div>
       </div>
     </header>

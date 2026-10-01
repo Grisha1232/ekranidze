@@ -4,7 +4,6 @@ import {
   createContext,
   useContext,
   useEffect,
-  useMemo,
   useState,
   type ReactNode,
 } from "react";
@@ -13,6 +12,9 @@ import type { MenuItem } from "@/data/menu";
 export type CartLine = {
   item: MenuItem;
   quantity: number;
+  /** Which restaurant's page this was added from — carts don't mix between
+   *  restaurants, since each is its own business with its own checkout. */
+  restaurantId: string;
 };
 
 type CartContextValue = {
@@ -20,11 +22,9 @@ type CartContextValue = {
   isOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
-  addItem: (item: MenuItem) => void;
-  removeItem: (itemId: string) => void;
-  setQuantity: (itemId: string, quantity: number) => void;
-  totalCount: number;
-  totalPrice: number;
+  addItem: (item: MenuItem, restaurantId: string) => void;
+  removeItem: (itemId: string, restaurantId: string) => void;
+  setQuantity: (itemId: string, restaurantId: string, quantity: number) => void;
 };
 
 const CartContext = createContext<CartContextValue | null>(null);
@@ -41,7 +41,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
     let stored: CartLine[] = [];
     try {
       const raw = window.localStorage.getItem(STORAGE_KEY);
-      stored = raw ? JSON.parse(raw) : [];
+      const parsed = raw ? JSON.parse(raw) : [];
+      // Carts saved before the multi-restaurant split have no restaurantId —
+      // the site only had "ekranidze" back then.
+      stored = parsed.map((line: CartLine) => ({
+        ...line,
+        restaurantId: line.restaurantId ?? "ekranidze",
+      }));
     } catch {
       stored = [];
     }
@@ -57,45 +63,43 @@ export function CartProvider({ children }: { children: ReactNode }) {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(lines));
   }, [lines, isHydrated]);
 
-  const addItem = (item: MenuItem) => {
+  const addItem = (item: MenuItem, restaurantId: string) => {
     setLines((prev) => {
-      const existing = prev.find((line) => line.item.id === item.id);
+      const existing = prev.find(
+        (line) => line.item.id === item.id && line.restaurantId === restaurantId,
+      );
       if (existing) {
         return prev.map((line) =>
-          line.item.id === item.id
+          line.item.id === item.id && line.restaurantId === restaurantId
             ? { ...line, quantity: line.quantity + 1 }
             : line,
         );
       }
-      return [...prev, { item, quantity: 1 }];
+      return [...prev, { item, quantity: 1, restaurantId }];
     });
   };
 
-  const removeItem = (itemId: string) => {
-    setLines((prev) => prev.filter((line) => line.item.id !== itemId));
-  };
-
-  const setQuantity = (itemId: string, quantity: number) => {
-    if (quantity <= 0) {
-      removeItem(itemId);
-      return;
-    }
+  const removeItem = (itemId: string, restaurantId: string) => {
     setLines((prev) =>
-      prev.map((line) =>
-        line.item.id === itemId ? { ...line, quantity } : line,
+      prev.filter(
+        (line) => !(line.item.id === itemId && line.restaurantId === restaurantId),
       ),
     );
   };
 
-  const totalCount = useMemo(
-    () => lines.reduce((sum, line) => sum + line.quantity, 0),
-    [lines],
-  );
-
-  const totalPrice = useMemo(
-    () => lines.reduce((sum, line) => sum + line.quantity * line.item.price, 0),
-    [lines],
-  );
+  const setQuantity = (itemId: string, restaurantId: string, quantity: number) => {
+    if (quantity <= 0) {
+      removeItem(itemId, restaurantId);
+      return;
+    }
+    setLines((prev) =>
+      prev.map((line) =>
+        line.item.id === itemId && line.restaurantId === restaurantId
+          ? { ...line, quantity }
+          : line,
+      ),
+    );
+  };
 
   const value: CartContextValue = {
     lines,
@@ -105,8 +109,6 @@ export function CartProvider({ children }: { children: ReactNode }) {
     addItem,
     removeItem,
     setQuantity,
-    totalCount,
-    totalPrice,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

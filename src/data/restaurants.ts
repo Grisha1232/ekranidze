@@ -17,9 +17,6 @@ export type Restaurant = {
   name: string;
   /** Letter shown by PlaceholderImage/LogoCarousel until a real logo file exists. */
   shortLabel: string;
-  /** Name spelled out in the Georgian (mkhedruli) script, used for the
-   *  logo-carousel placeholder (styled with the Noto Serif Georgian font). */
-  georgianName: string;
   tone: "warm" | "clay" | "olive";
   badge: string;
   heroHeading: string;
@@ -45,7 +42,6 @@ export const restaurants: Restaurant[] = [
     path: "/ekranidze",
     name: "Экранидзе",
     shortLabel: "Экранидзе",
-    georgianName: "ეკრანიძე",
     tone: "clay",
     badge: "Люберцы, грузинская кухня",
     heroHeading: "Хинкали и хачапури по традиционным рецептам",
@@ -76,7 +72,6 @@ export const restaurants: Restaurant[] = [
     path: "/mama-hinkali",
     name: "Мама хинкали",
     shortLabel: "Мама хинкали",
-    georgianName: "მამა ხინკალი",
     tone: "olive",
     badge: "Москва, грузинская кухня",
     heroHeading: "Мама хинкали",
@@ -89,7 +84,7 @@ export const restaurants: Restaurant[] = [
     ratingValue: "—",
     phone: "+7 000 000-00-00",
     phoneHref: "tel:+70000000000",
-    legalInfo: "ИНН / ОГРН — уточняется",
+    legalInfo: "ИНН 9725187088 · ОГРН 1257700255823",
     isPlaceholder: true,
     addresses: [
       {

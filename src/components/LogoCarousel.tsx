@@ -6,7 +6,7 @@ import { PlaceholderImage } from "@/components/PlaceholderImage";
 export type LogoSlide = {
   id: string;
   label: string;
-  georgianName: string;
+  name: string;
   tone: "warm" | "clay" | "olive";
 };
 
@@ -50,7 +50,7 @@ export function LogoCarousel({
   return (
     <PlaceholderImage
       label={current.label}
-      text={current.georgianName}
+      text={current.name}
       fontClassName="font-georgian text-3xl sm:text-4xl"
       tone={current.tone}
       className={`transition-opacity ease-in-out motion-reduce:transition-none ${

@@ -6,9 +6,17 @@ import { useCart } from "@/context/CartContext";
 import { BASE_PATH } from "@/lib/base-path";
 import type { MenuItem } from "@/data/menu";
 
-export function MenuItemCard({ item }: { item: MenuItem }) {
+export function MenuItemCard({
+  item,
+  restaurantId,
+}: {
+  item: MenuItem;
+  restaurantId: string;
+}) {
   const { lines, addItem, setQuantity } = useCart();
-  const quantity = lines.find((line) => line.item.id === item.id)?.quantity ?? 0;
+  const quantity =
+    lines.find((line) => line.item.id === item.id && line.restaurantId === restaurantId)
+      ?.quantity ?? 0;
 
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface">
@@ -42,7 +50,7 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
             <div className="flex items-center gap-2">
               <button
                 type="button"
-                onClick={() => setQuantity(item.id, quantity - 1)}
+                onClick={() => setQuantity(item.id, restaurantId, quantity - 1)}
                 className="h-7 w-7 rounded-full border border-border text-sm text-foreground hover:border-primary"
                 aria-label="Уменьшить количество"
               >
@@ -53,7 +61,7 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
               </span>
               <button
                 type="button"
-                onClick={() => setQuantity(item.id, quantity + 1)}
+                onClick={() => setQuantity(item.id, restaurantId, quantity + 1)}
                 className="h-7 w-7 rounded-full border border-border text-sm text-foreground hover:border-primary"
                 aria-label="Увеличить количество"
               >
@@ -63,7 +71,7 @@ export function MenuItemCard({ item }: { item: MenuItem }) {
           ) : (
             <button
               type="button"
-              onClick={() => addItem(item)}
+              onClick={() => addItem(item, restaurantId)}
               className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
             >
               В корзину
