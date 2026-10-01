@@ -42,7 +42,7 @@ export type Restaurant = {
 export const restaurants: Restaurant[] = [
   {
     id: "ekranidze",
-    path: "/",
+    path: "/ekranidze",
     name: "Экранидзе",
     shortLabel: "Экранидзе",
     georgianName: "ეკრანიძე",
@@ -78,10 +78,10 @@ export const restaurants: Restaurant[] = [
     shortLabel: "Мама хинкали",
     georgianName: "მამა ხინკალი",
     tone: "olive",
-    badge: "Люберцы, грузинская кухня",
+    badge: "Москва, грузинская кухня",
     heroHeading: "Мама хинкали",
     heroText:
-      "Страница в разработке — здесь скоро появятся реальные адреса, меню и контакты. Пока показываем меню «Экранидзе» как временную заглушку.",
+      "Открываем точки в Москве — адреса ниже. Меню, телефон и остальные детали страницы пока в разработке, показываем меню «Экранидзе» как временную заглушку.",
     aboutHeading: "Страница в разработке",
     aboutParagraphs: [
       "Раздел «О нас» для «Мама хинкали» ещё не наполнен реальным текстом — это временная заглушка до получения материалов от клиента.",
@@ -92,8 +92,22 @@ export const restaurants: Restaurant[] = [
     legalInfo: "ИНН / ОГРН — уточняется",
     isPlaceholder: true,
     addresses: [
-      { id: "mama-hinkali-1", label: "Точка 1", addressText: "Адрес уточняется" },
-      { id: "mama-hinkali-2", label: "Точка 2", addressText: "Адрес уточняется" },
+      {
+        id: "mama-hinkali-shukhova",
+        label: "Работает",
+        addressText: "ул. Шухова, 21, Москва",
+        coords: [37.608805, 55.716351],
+        yandexUrl:
+          "https://yandex.ru/maps/213/moscow/house/ulitsa_shukhova_21/37.608805,55.716351",
+      },
+      {
+        id: "mama-hinkali-dukhovskoy",
+        label: "Откроется позже",
+        addressText: "Духовской пер., 17с16, Москва",
+        coords: [37.616773, 55.704874],
+        yandexUrl:
+          "https://yandex.ru/maps/213/moscow/house/dukhovskoy_pereulok_17s16/Z04YcAZmTkIEQFtvfXtxdXRkYA==/",
+      },
     ],
   },
 ];
