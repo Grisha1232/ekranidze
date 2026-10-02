@@ -13,14 +13,23 @@ existing site (ekranidze.clients.site) — keep them in sync if the client's men
 contact info changes; don't treat them as throwaway placeholder text. Photos are
 still placeholder gradients (`PlaceholderImage`) pending real photography. The "О
 нас" copy and amenities list were written fresh rather than copied from the
-reference site — do the same for any future copy pulled from there. The cart is
-intentionally a stub: it holds state client-side and never sends a network request.
-See the published delivery-research
+reference site — do the same for any future copy pulled from there. The cart holds
+state client-side; checkout (`CheckoutPage`) only sends a network request when
+`NEXT_PUBLIC_ORDERS_API_URL` is set at build time — unset (today's state, including
+the live GitHub Pages build), it stays the old local-only stub, no network call at
+all. See the published delivery-research
 artifact (linked in conversation history) for the plan on how ordering should eventually
 work — short version: real orders currently go through Yandex.Eda directly, not this
 site; the recommended path to a functional cart is Yandex Delivery's API (separate,
 free-to-integrate product from the Yandex.Eda marketplace listing), not the Yandex.Eda
 partner API (which is one-way POS→Yandex.Eda and can't accept orders from an external site).
+
+`server/` is a separate standalone backend (its own `package.json`, not part of
+the Next.js app) that the checkout form POSTs to once wired up — see
+`server/README.md`. It forwards new orders to the right restaurant's Telegram
+chat; a restaurant with no bot token configured yet just logs the order instead
+of failing (stub mode). Not deployed anywhere yet — meant for the Timeweb VPS
+once that's set up, independently of the GitHub Pages static site.
 
 ## Commands
 
@@ -70,6 +79,36 @@ automatically via `.github/workflows/deploy-pages.yml` on every push to `main`.
   before adding a new font, check
   `node_modules/next/dist/compiled/@next/font/dist/google/font-data.json` for its
   `subsets`, or the build will fail TypeScript checking on the `subsets` array.
+
+## Legal compliance before a real checkout ships
+
+The cart is currently a client-only stub (see above) precisely so none of this
+applies yet. Once it actually collects and submits customer data (name/phone/
+delivery address) and/or takes payment, Russian law imposes real requirements —
+revisit this list at that point, and verify current specifics with an
+accountant/lawyer before launch, since penalties are significant and the rules
+around personal data tightened as recently as July 2025:
+
+- **152-ФЗ (personal data).** Collecting name/phone/address at checkout makes
+  the site a personal-data operator: requires a published Политика обработки
+  персональных данных, an explicit consent checkbox at checkout (not implied
+  by submitting the form), and Russian citizens' data must be stored on
+  servers located in Russia (data-localization requirement, 152-ФЗ Art.
+  18(5)) — a reason to prefer Russian hosting (e.g. Timeweb) over a foreign
+  host once there's a real backend. Repeat violations carry turnover-based
+  fines (1–3% of annual revenue).
+- **Law "On Protection of Consumer Rights" + Правительство РФ Постановление
+  №612** (distance selling). Before the customer completes an order, the site
+  must show the seller's full name/address/ИНН/ОГРН (already in
+  `ContactsFooter`), price, payment terms, delivery terms, and return/refund
+  terms — i.e. a публичная оферта page, which doesn't exist yet.
+- **54-ФЗ.** Every online payment needs a fiscal receipt. In practice this is
+  covered by the payment aggregator's bundled "облачная касса" (e.g. ЮKassa,
+  Т-Банк) — not something to build separately.
+- **Ad-marking law**, only if paid promotion ever runs for this site (targeted
+  ads, bloggers, etc.): requires "erid" labeling through an ОРД or risks a
+  fine. Not about the site's own code, but about any future marketing linking
+  to it.
 
 ## Working in this repo
 

@@ -1,0 +1,16 @@
+{
+  "name": "ekranidze-orders-api",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0",
+  "description": "Small standalone backend for the checkout form — forwards new orders to the right restaurant's Telegram chat. Deployed separately from the static site (see README.md).",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
+}

@@ -9,6 +9,11 @@ import { restaurants } from "@/data/restaurants";
 type FulfillmentMethod = "pickup" | "delivery";
 type PaymentMethod = "cash" | "card" | "online";
 
+// Set once the orders backend (see server/) is deployed and its URL is
+// passed in at build time — see server/README.md. Until then this stays
+// undefined and checkout keeps today's local-only stub behavior.
+const ORDERS_API_URL = process.env.NEXT_PUBLIC_ORDERS_API_URL;
+
 export function CheckoutPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -30,18 +35,63 @@ export function CheckoutPage() {
   const [comment, setComment] = useState("");
   const [attempted, setAttempted] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  // Whether the order actually reached the backend (vs. the local-only
+  // stub path used while ORDERS_API_URL isn't configured yet).
+  const [sentToBackend, setSentToBackend] = useState(false);
 
   const nameError = attempted && name.trim() === "";
   const phoneError = attempted && phone.trim() === "";
   const addressError = attempted && fulfillment === "delivery" && address.trim() === "";
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAttempted(true);
+    setSubmitError(null);
     if (name.trim() === "" || phone.trim() === "") return;
     if (fulfillment === "delivery" && address.trim() === "") return;
-    // Stub only — this never sends a network request. See CLAUDE.md.
-    setSubmitted(true);
+
+    if (!ORDERS_API_URL) {
+      // Stub only — this never sends a network request. See CLAUDE.md.
+      setSubmitted(true);
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const res = await fetch(`${ORDERS_API_URL}/api/orders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          restaurantId: restaurant.id,
+          customerName: name,
+          customerPhone: phone,
+          fulfillment,
+          address: fulfillment === "delivery" ? address : undefined,
+          payment,
+          comment,
+          items: lines.map((line) => ({
+            name: line.item.name,
+            quantity: line.quantity,
+            price: line.item.price,
+          })),
+          totalPrice,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.ok) {
+        throw new Error(data.error ?? `HTTP ${res.status}`);
+      }
+      setSentToBackend(true);
+      setSubmitted(true);
+    } catch {
+      setSubmitError(
+        `Не получилось отправить заказ. Позвоните нам: ${restaurant.phone}`,
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -49,8 +99,18 @@ export function CheckoutPage() {
       <div className="mx-auto flex min-h-screen max-w-xl flex-col items-center justify-center gap-4 px-4 text-center">
         <h1 className="font-display text-2xl text-foreground">Заявка принята</h1>
         <p className="text-sm text-muted-foreground">
-          Онлайн-оформление пока в разработке — этот заказ никуда не отправлен.
-          Чтобы подтвердить его, позвоните в «{restaurant.name}»:{" "}
+          {sentToBackend ? (
+            <>
+              Заказ отправлен в «{restaurant.name}». Если по нему не свяжутся в
+              течение 15 минут, позвоните сами:{" "}
+            </>
+          ) : (
+            <>
+              Онлайн-оформление пока в разработке — этот заказ никуда не
+              отправлен. Чтобы подтвердить его, позвоните в «{restaurant.name}
+              »:{" "}
+            </>
+          )}
           <a
             href={restaurant.phoneHref}
             className="font-medium text-foreground underline"
@@ -284,13 +344,20 @@ export function CheckoutPage() {
 
           <button
             type="submit"
-            className="mt-5 w-full rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover"
+            disabled={submitting}
+            className="mt-5 w-full rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Оформить заказ
+            {submitting ? "Отправляем…" : "Оформить заказ"}
           </button>
-          <p className="mt-3 text-center text-xs text-muted-foreground">
-            Онлайн-оформление пока в разработке — заказ никуда не отправляется.
-          </p>
+          {submitError ? (
+            <p className="mt-3 text-center text-xs text-red-500">{submitError}</p>
+          ) : (
+            !ORDERS_API_URL && (
+              <p className="mt-3 text-center text-xs text-muted-foreground">
+                Онлайн-оформление пока в разработке — заказ никуда не отправляется.
+              </p>
+            )
+          )}
         </aside>
       </form>
     </div>
