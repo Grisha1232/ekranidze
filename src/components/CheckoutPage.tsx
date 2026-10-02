@@ -33,6 +33,7 @@ export function CheckoutPage() {
   const [address, setAddress] = useState("");
   const [payment, setPayment] = useState<PaymentMethod>("cash");
   const [comment, setComment] = useState("");
+  const [consent, setConsent] = useState(false);
   const [attempted, setAttempted] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -44,6 +45,7 @@ export function CheckoutPage() {
   const nameError = attempted && name.trim() === "";
   const phoneError = attempted && phone.trim() === "";
   const addressError = attempted && fulfillment === "delivery" && address.trim() === "";
+  const consentError = attempted && !consent;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,6 +53,7 @@ export function CheckoutPage() {
     setSubmitError(null);
     if (name.trim() === "" || phone.trim() === "") return;
     if (fulfillment === "delivery" && address.trim() === "") return;
+    if (!consent) return;
 
     if (!ORDERS_API_URL) {
       // Stub only — this never sends a network request. See CLAUDE.md.
@@ -341,6 +344,31 @@ export function CheckoutPage() {
             <span className="text-muted-foreground">К оплате</span>
             <span className="font-display text-lg text-foreground">{totalPrice} ₽</span>
           </div>
+
+          <label className="mt-4 flex items-start gap-2 text-xs text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={consent}
+              onChange={(e) => setConsent(e.target.checked)}
+              className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
+            />
+            <span>
+              Согласен(на) на обработку персональных данных в соответствии с{" "}
+              <Link href="/privacy" className="underline hover:text-foreground">
+                Политикой обработки персональных данных
+              </Link>{" "}
+              и условиями{" "}
+              <Link href="/oferta" className="underline hover:text-foreground">
+                Публичной оферты
+              </Link>
+              .
+            </span>
+          </label>
+          {consentError && (
+            <p className="mt-1 text-xs text-red-500">
+              Нужно согласие на обработку данных, чтобы отправить заказ
+            </p>
+          )}
 
           <button
             type="submit"

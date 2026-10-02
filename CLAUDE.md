@@ -80,31 +80,28 @@ automatically via `.github/workflows/deploy-pages.yml` on every push to `main`.
   `node_modules/next/dist/compiled/@next/font/dist/google/font-data.json` for its
   `subsets`, or the build will fail TypeScript checking on the `subsets` array.
 
-## Legal compliance before a real checkout ships
+## Legal compliance
 
-The cart is currently a client-only stub (see above) precisely so none of this
-applies yet. Once it actually collects and submits customer data (name/phone/
-delivery address) and/or takes payment, Russian law imposes real requirements —
-revisit this list at that point, and verify current specifics with an
-accountant/lawyer before launch, since penalties are significant and the rules
-around personal data tightened as recently as July 2025:
+Verify current specifics with an accountant/lawyer before relying on any of
+this for real — none of it has had professional legal review, and the rules
+around personal data tightened as recently as July 2025.
 
-- **152-ФЗ (personal data).** Collecting name/phone/address at checkout makes
-  the site a personal-data operator: requires a published Политика обработки
-  персональных данных, an explicit consent checkbox at checkout (not implied
-  by submitting the form), and Russian citizens' data must be stored on
-  servers located in Russia (data-localization requirement, 152-ФЗ Art.
-  18(5)) — a reason to prefer Russian hosting (e.g. Timeweb) over a foreign
-  host once there's a real backend. Repeat violations carry turnover-based
+- **152-ФЗ (personal data) — done.** `/privacy` (`src/app/privacy/page.tsx`)
+  publishes the Политика обработки персональных данных, and `CheckoutPage`
+  requires an explicit consent checkbox (linking to it and to `/oferta`)
+  before a submission is allowed, real or stub. Still outstanding: Russian
+  citizens' data must actually be stored on servers located in Russia once
+  there's a real backend (152-ФЗ Art. 18(5)) — satisfied once `server/` is on
+  Timeweb rather than a foreign host. Repeat violations carry turnover-based
   fines (1–3% of annual revenue).
-- **Law "On Protection of Consumer Rights" + Правительство РФ Постановление
-  №612** (distance selling). Before the customer completes an order, the site
-  must show the seller's full name/address/ИНН/ОГРН (already in
-  `ContactsFooter`), price, payment terms, delivery terms, and return/refund
-  terms — i.e. a публичная оферта page, which doesn't exist yet.
-- **54-ФЗ.** Every online payment needs a fiscal receipt. In practice this is
-  covered by the payment aggregator's bundled "облачная касса" (e.g. ЮKassa,
-  Т-Банк) — not something to build separately.
+- **Law "On Protection of Consumer Rights" (distance selling) — done.**
+  `/oferta` (`src/app/oferta/page.tsx`) covers seller identity (both
+  restaurants' legal name/address/ИНН/ОГРН, pulled from `restaurants.ts`),
+  price, payment terms, delivery terms, and return/refund terms.
+- **54-ФЗ — not done, blocked on payment.** Every online payment needs a
+  fiscal receipt. In practice this is covered by the payment aggregator's
+  bundled "облачная касса" (e.g. ЮKassa, Т-Банк) once payment is wired up —
+  not something to build separately.
 - **Ad-marking law**, only if paid promotion ever runs for this site (targeted
   ads, bloggers, etc.): requires "erid" labeling through an ОРД or risks a
   fine. Not about the site's own code, but about any future marketing linking

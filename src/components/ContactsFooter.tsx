@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Restaurant } from "@/data/restaurants";
 
 function buildMapSrc(restaurant: Restaurant) {
@@ -94,6 +95,14 @@ export function ContactsFooter({ restaurant }: { restaurant: Restaurant }) {
       </div>
 
       <div className="border-t border-border px-4 py-4 text-center text-xs text-muted-foreground sm:px-6">
+        <div className="mb-2 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
+          <Link href="/privacy" className="hover:text-foreground">
+            Политика обработки персональных данных
+          </Link>
+          <Link href="/oferta" className="hover:text-foreground">
+            Публичная оферта
+          </Link>
+        </div>
         © {new Date().getFullYear()} {restaurant.name} · {restaurant.legalInfo}. Меню и цены
         — на дату сборки сайта, сверьте перед запуском.
       </div>
