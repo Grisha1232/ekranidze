@@ -20,6 +20,9 @@ export type Restaurant = {
   /** Real logo image in public/logos/ — shown instead of the font-styled
    *  PlaceholderImage text in the Hero logo carousel when present. */
   logoImage?: string;
+  /** Small round badge in public/logos/ — shown next to this restaurant's
+   *  name in the header switcher, but only while it's the active page. */
+  headerIcon?: string;
   tone: "warm" | "clay" | "olive";
   badge: string;
   heroHeading: string;
@@ -45,6 +48,8 @@ export const restaurants: Restaurant[] = [
     path: "/ekranidze",
     name: "Экранидзе",
     shortLabel: "Экранидзе",
+    logoImage: "/logos/ekranidze-emblem.png",
+    headerIcon: "/logos/ekranidze-emblem-round.png",
     tone: "clay",
     badge: "Люберцы, грузинская кухня",
     heroHeading: "Хинкали и хачапури по традиционным рецептам",
@@ -76,6 +81,7 @@ export const restaurants: Restaurant[] = [
     name: "Мама хинкали",
     shortLabel: "Мама хинкали",
     logoImage: "/logos/mama-hinkali-wordmark.png",
+    headerIcon: "/logos/mama-hinkali-badge.png",
     tone: "olive",
     badge: "Москва, грузинская кухня",
     heroHeading: "Хинкали, хачапури и грузинское застолье в Москве",
