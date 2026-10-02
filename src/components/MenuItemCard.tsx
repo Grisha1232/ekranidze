@@ -1,9 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import { PlaceholderImage } from "@/components/PlaceholderImage";
+import { MenuItemThumbnail } from "@/components/MenuItemThumbnail";
 import { useCart } from "@/context/CartContext";
-import { BASE_PATH } from "@/lib/base-path";
 import type { MenuItem } from "@/data/menu";
 
 export function MenuItemCard({
@@ -20,19 +18,11 @@ export function MenuItemCard({
 
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-border bg-surface">
-      {item.image ? (
-        <div className="relative h-36 w-full">
-          <Image
-            src={`${BASE_PATH}${item.image}`}
-            alt={item.name}
-            fill
-            sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw"
-            className="object-cover"
-          />
-        </div>
-      ) : (
-        <PlaceholderImage label={item.name} tone={item.tone} className="h-36 w-full" />
-      )}
+      <MenuItemThumbnail
+        item={item}
+        className="h-36 w-full"
+        sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw"
+      />
       <div className="flex flex-1 flex-col gap-2 p-4">
         <h3 className="font-display text-base font-semibold text-foreground">
           {item.name}

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { MenuItemThumbnail } from "@/components/MenuItemThumbnail";
 import { useCart } from "@/context/CartContext";
 
 export function CartDrawer({ restaurantId }: { restaurantId: string }) {
@@ -49,6 +50,11 @@ export function CartDrawer({ restaurantId }: { restaurantId: string }) {
             <ul className="flex flex-col gap-4">
               {lines.map((line) => (
                 <li key={line.item.id} className="flex gap-3">
+                  <MenuItemThumbnail
+                    item={line.item}
+                    className="h-14 w-14 shrink-0 rounded-xl"
+                    sizes="56px"
+                  />
                   <div className="flex-1">
                     <p className="text-sm font-medium text-foreground">
                       {line.item.name}

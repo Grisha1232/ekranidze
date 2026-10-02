@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { MenuItemThumbnail } from "@/components/MenuItemThumbnail";
 import { useCart } from "@/context/CartContext";
 import { restaurants } from "@/data/restaurants";
 
@@ -171,6 +172,11 @@ export function CheckoutPage() {
                   key={line.item.id}
                   className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-4"
                 >
+                  <MenuItemThumbnail
+                    item={line.item}
+                    className="h-16 w-16 shrink-0 rounded-xl"
+                    sizes="64px"
+                  />
                   <div className="flex-1">
                     <p className="text-sm font-medium text-foreground">{line.item.name}</p>
                     <p className="text-xs text-muted-foreground">
