@@ -17,6 +17,9 @@ export type Restaurant = {
   name: string;
   /** Letter shown by PlaceholderImage/LogoCarousel until a real logo file exists. */
   shortLabel: string;
+  /** Real logo image in public/logos/ — shown instead of the font-styled
+   *  PlaceholderImage text in the Hero logo carousel when present. */
+  logoImage?: string;
   tone: "warm" | "clay" | "olive";
   badge: string;
   heroHeading: string;
@@ -72,18 +75,19 @@ export const restaurants: Restaurant[] = [
     path: "/mama-hinkali",
     name: "Мама хинкали",
     shortLabel: "Мама хинкали",
+    logoImage: "/logos/mama-hinkali-wordmark.png",
     tone: "olive",
     badge: "Москва, грузинская кухня",
-    heroHeading: "Мама хинкали",
+    heroHeading: "Хинкали, хачапури и грузинское застолье в Москве",
     heroText:
-      "Открываем точки в Москве — адреса ниже. Меню, телефон и остальные детали страницы пока в разработке, показываем меню «Экранидзе» как временную заглушку.",
+      "Открываем точки в Москве — адреса и меню ниже. Раздел «О нас» и фотографии блюд пока в разработке.",
     aboutHeading: "Страница в разработке",
     aboutParagraphs: [
       "Раздел «О нас» для «Мама хинкали» ещё не наполнен реальным текстом — это временная заглушка до получения материалов от клиента.",
     ],
     ratingValue: "—",
-    phone: "+7 000 000-00-00",
-    phoneHref: "tel:+70000000000",
+    phone: "+7 499 455-66-21",
+    phoneHref: "tel:+74994556621",
     legalInfo: "ИНН 9725187088 · ОГРН 1257700255823",
     isPlaceholder: true,
     addresses: [

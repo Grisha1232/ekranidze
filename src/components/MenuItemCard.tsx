@@ -41,7 +41,7 @@ export function MenuItemCard({
           <p className="text-sm text-muted-foreground">{item.description}</p>
         )}
         <div className="flex-1" />
-        <p className="text-xs text-muted-foreground">{item.weight}</p>
+        {item.weight && <p className="text-xs text-muted-foreground">{item.weight}</p>}
         <div className="mt-2 flex items-center justify-between">
           <span className="font-display text-lg text-foreground">
             {item.price} ₽

@@ -111,7 +111,7 @@ export function CheckoutPage() {
                   <div className="flex-1">
                     <p className="text-sm font-medium text-foreground">{line.item.name}</p>
                     <p className="text-xs text-muted-foreground">
-                      {line.item.price} ₽ · {line.item.weight}
+                      {line.item.price} ₽{line.item.weight ? ` · ${line.item.weight}` : ""}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">

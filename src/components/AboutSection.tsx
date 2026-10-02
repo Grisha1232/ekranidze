@@ -1,4 +1,4 @@
-import { categories, menuItems } from "@/data/menu";
+import { getMenu } from "@/data/menu";
 import type { Restaurant } from "@/data/restaurants";
 
 const AMENITIES = [
@@ -13,10 +13,15 @@ const AMENITIES = [
 ];
 
 export function AboutSection({ restaurant }: { restaurant: Restaurant }) {
+  const { categories, menuItems } = getMenu(restaurant.id);
+  const foodCategories = categories.filter((c) => c.group === "food");
+  const foodItemCount = menuItems.filter((item) =>
+    foodCategories.some((c) => c.id === item.categoryId),
+  ).length;
   const stats = [
     { value: restaurant.ratingValue, label: "рейтинг на Яндекс Картах" },
-    { value: `${menuItems.length}+`, label: "блюд в меню" },
-    { value: `${categories.length}`, label: "категорий меню" },
+    { value: `${foodItemCount}+`, label: "блюд в меню" },
+    { value: `${foodCategories.length}`, label: "категорий меню" },
   ];
 
   return (

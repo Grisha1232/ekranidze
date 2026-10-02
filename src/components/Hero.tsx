@@ -7,6 +7,7 @@ export function Hero({ restaurant }: { restaurant: Restaurant }) {
     label: r.shortLabel,
     name: r.name,
     tone: r.tone,
+    image: r.logoImage,
   }));
 
   return (

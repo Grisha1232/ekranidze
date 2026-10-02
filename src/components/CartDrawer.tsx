@@ -54,7 +54,7 @@ export function CartDrawer({ restaurantId }: { restaurantId: string }) {
                       {line.item.name}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {line.item.price} ₽ · {line.item.weight}
+                      {line.item.price} ₽{line.item.weight ? ` · ${line.item.weight}` : ""}
                     </p>
                     <div className="mt-2 flex items-center gap-2">
                       <button
