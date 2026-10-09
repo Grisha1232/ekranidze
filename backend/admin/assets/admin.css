@@ -1,0 +1,65 @@
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #faf6ef;
+  color: #2c241c;
+}
+a { color: #7c5c3e; }
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px;
+  background: #fffdf9;
+  border-bottom: 1px solid #e6dac6;
+}
+.topbar a.button, button, input[type=submit] {
+  background: #b08a5e;
+  color: #fffdf9;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+  display: inline-block;
+}
+.topbar a.button.secondary, .button.secondary {
+  background: transparent;
+  color: #6f5f4d;
+  border: 1px solid #e6dac6;
+}
+main { max-width: 1000px; margin: 0 auto; padding: 24px; }
+h1 { font-size: 24px; margin-top: 0; }
+h2 { font-size: 18px; border-bottom: 1px solid #e6dac6; padding-bottom: 8px; margin-top: 32px; }
+.card {
+  background: #fffdf9;
+  border: 1px solid #e6dac6;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+label { display: block; font-size: 13px; font-weight: 600; margin: 10px 0 4px; }
+input[type=text], input[type=number], input[type=password], textarea, select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #e6dac6;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  background: #fff;
+}
+textarea { min-height: 70px; resize: vertical; }
+table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+th, td { text-align: left; padding: 8px; border-bottom: 1px solid #e6dac6; font-size: 14px; vertical-align: top; }
+.row { display: flex; gap: 12px; flex-wrap: wrap; }
+.row > * { flex: 1; min-width: 180px; }
+.flash { padding: 10px 14px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
+.flash.ok { background: #e7efe3; color: #3f5a33; }
+.flash.error { background: #f6e3e0; color: #8a3a2e; }
+.muted { color: #6f5f4d; font-size: 13px; }
+.danger { background: #b5473a !important; }
+.restaurant-list { display: grid; gap: 16px; }
+.restaurant-list a.card { text-decoration: none; color: inherit; display: block; }
+.inline-form { display: inline; }
