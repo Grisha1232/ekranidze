@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/auth.php';
 require_login();
 require_once __DIR__ . '/includes/layout.php';
+require_once __DIR__ . '/../lib/uploads.php';
 
 $id = $_GET['id'] ?? '';
 $pdo = db();
@@ -52,6 +53,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
         flash('Блюдо сохранено.');
     }
+    if ($action === 'upload_item_photo') {
+        $old = $pdo->prepare('SELECT image FROM menu_items WHERE id=? AND restaurant_id=?');
+        $old->execute([$_POST['item_id'], $id]);
+        $oldUrl = $old->fetchColumn() ?: null;
+
+        $url = handle_dish_photo_upload($_FILES['photo_file'] ?? null, $id, $_POST['item_id'], $oldUrl);
+        if ($url) {
+            $pdo->prepare('UPDATE menu_items SET image=? WHERE id=? AND restaurant_id=?')
+                ->execute([$url, $_POST['item_id'], $id]);
+            flash('Фото блюда загружено.');
+        } else {
+            flash('Не удалось загрузить фото — проверьте формат (PNG/JPG/WEBP) и размер (до 5 МБ).', 'error');
+        }
+    }
+
     if ($action === 'delete_item') {
         $pdo->prepare('DELETE FROM menu_items WHERE id=? AND restaurant_id=?')
             ->execute([$_POST['item_id'], $id]);
@@ -125,7 +141,7 @@ $activeCategory = $_GET['category'] ?? ($categories[0]['id'] ?? null);
   $items = $items->fetchAll();
 ?>
 <?php foreach ($items as $item): ?>
-<form method="post" class="card">
+<form method="post" enctype="multipart/form-data" class="card">
   <?= csrf_field() ?>
   <input type="hidden" name="form_action" value="update_item">
   <input type="hidden" name="item_id" value="<?= htmlspecialchars($item['id']) ?>">
@@ -153,7 +169,14 @@ $activeCategory = $_GET['category'] ?? ($categories[0]['id'] ?? null);
     </div>
   </div>
   <label>Фото (путь /menu/..., необязательно)</label>
+  <?php if ($item['image']): ?>
+    <div style="margin-bottom:8px"><img src="<?= htmlspecialchars($item['image']) ?>" alt="" style="max-height:80px;max-width:120px;object-fit:cover;border:1px solid #ddd;border-radius:6px"></div>
+  <?php endif; ?>
   <input type="text" name="image" value="<?= htmlspecialchars((string)$item['image']) ?>">
+  <div class="row" style="margin-top:8px;align-items:center">
+    <input type="file" name="photo_file" accept="image/png,image/jpeg,image/webp" style="flex:1">
+    <div style="flex:0"><button type="submit" onclick="this.form.form_action.value='upload_item_photo'">Загрузить фото</button></div>
+  </div>
   <div style="margin-top:8px">
     <input type="submit" value="Сохранить">
     <button type="submit" class="danger" onclick="this.form.form_action.value='delete_item'; return confirm('Удалить блюдо?')">Удалить</button>

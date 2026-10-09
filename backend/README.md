@@ -24,7 +24,9 @@ points at that same shared instance rather than hosting its own copy.
   `admin/orders.php`, instead of vanishing.
 - `admin/` — session-login admin panel (single shared account) covering
   every editable field: hero/about/contacts text, amenities, addresses,
-  menu categories/items, free-form sections, and an orders list.
+  menu categories/items, free-form sections, and an orders list. The Hero
+  logo (`restaurant.php`) and dish photos (`menu.php`) can be uploaded as
+  files, not just pasted as a path — see `lib/uploads.php`.
 - `lib/yandex_rating.php`, `cron/update_ratings.php` — scrapes each
   restaurant's real Yandex Maps org page (`restaurants.yandex_reviews_url`,
   also shown as the "отзывы" link) for its aggregate rating and writes it to
@@ -40,6 +42,18 @@ points at that same shared instance rather than hosting its own copy.
   `crontab -e`, which is blocked on this hosting): command
   `php /home/c/ci004114/ekranidze/public_html/backend/cron/update_ratings.php`,
   once or twice a day is plenty.
+- `lib/uploads.php` — file uploads for the Hero logo and dish photos
+  (`handle_logo_upload`/`handle_dish_photo_upload`, both thin wrappers over
+  `handle_image_upload`). Validates real image bytes via `getimagesize()`
+  (not just the extension/Content-Type), writes under a server-generated
+  filename to `uploads/logos/` or `uploads/menu/`, and deletes the previous
+  file first if it was one of our own uploads (never a static `/logos/...`
+  or `/menu/...` path baked into the Next.js build — this backend doesn't
+  own those). Stored as a protocol-relative URL
+  (`//ekranidze.ru/backend/uploads/...`) so it keeps working once SSL is
+  set up. `uploads/.htaccess` blocks script execution inside that
+  directory — defense in depth alongside the content check, since every
+  filename there is still server-generated, never the client's.
 
 ## Local setup
 

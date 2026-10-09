@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/auth.php';
 require_login();
 require_once __DIR__ . '/includes/layout.php';
+require_once __DIR__ . '/../lib/uploads.php';
 
 $id = $_GET['id'] ?? '';
 $pdo = db();
@@ -26,6 +27,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $id,
             ]);
         flash('Основные поля сохранены.');
+    }
+
+    if ($action === 'upload_logo') {
+        $url = handle_logo_upload($_FILES['logo_file'] ?? null, $id, $restaurant['logo_image']);
+        if ($url) {
+            $pdo->prepare('UPDATE restaurants SET logo_image=? WHERE id=?')->execute([$url, $id]);
+            flash('Логотип загружен.');
+        } else {
+            flash('Не удалось загрузить файл — проверьте формат (PNG/JPG/WEBP) и размер (до 5 МБ).', 'error');
+        }
     }
 
     if ($action === 'add_paragraph') {
@@ -150,7 +161,13 @@ $sections->execute([$id]);
     <div><label>Юр. информация (ИНН/ОГРН)</label><input type="text" name="legal_info" value="<?= htmlspecialchars($restaurant['legal_info']) ?>"></div>
   </div>
   <div class="row">
-    <div><label>Логотип для Hero (путь /logos/...)</label><input type="text" name="logo_image" value="<?= htmlspecialchars((string)$restaurant['logo_image']) ?>"></div>
+    <div>
+      <label>Логотип для Hero</label>
+      <?php if ($restaurant['logo_image']): ?>
+        <div style="margin-bottom:8px"><img src="<?= htmlspecialchars($restaurant['logo_image']) ?>" alt="" style="max-height:80px;max-width:220px;object-fit:contain;border:1px solid #ddd;border-radius:6px;padding:4px;background:#fff"></div>
+      <?php endif; ?>
+      <input type="text" name="logo_image" value="<?= htmlspecialchars((string)$restaurant['logo_image']) ?>" placeholder="/logos/... или ссылка">
+    </div>
     <div><label>Иконка в шапке (путь /logos/...)</label><input type="text" name="header_icon" value="<?= htmlspecialchars((string)$restaurant['header_icon']) ?>"></div>
   </div>
   <div class="row">
@@ -164,6 +181,17 @@ $sections->execute([$id]);
     <div><label><input type="checkbox" name="is_placeholder" style="width:auto" <?= $restaurant['is_placeholder'] ? 'checked' : '' ?>> Это черновик (показывать баннер «в разработке»)</label></div>
   </div>
   <div style="margin-top:16px"><input type="submit" value="Сохранить"></div>
+</form>
+
+<form method="post" enctype="multipart/form-data" class="card">
+  <?= csrf_field() ?>
+  <input type="hidden" name="form_action" value="upload_logo">
+  <label>Загрузить логотип для Hero с компьютера (PNG/JPG/WEBP, до 5 МБ)</label>
+  <div class="row">
+    <input type="file" name="logo_file" accept="image/png,image/jpeg,image/webp" required>
+    <div style="flex:0"><input type="submit" value="Загрузить"></div>
+  </div>
+  <p class="muted" style="margin-top:8px">Заменяет файл выше и удаляет старый загруженный файл с сервера.</p>
 </form>
 
 <h2>Текст «О нас» (абзацы)</h2>
