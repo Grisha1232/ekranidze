@@ -3,9 +3,9 @@ import { RestaurantPage } from "@/components/RestaurantPage";
 import { restaurants } from "@/data/restaurants";
 
 export const metadata: Metadata = {
-  title: "Мама хинкали — страница в разработке",
+  title: "Мама хинкали — грузинская кухня в Москве",
   description:
-    "Страница ресторана «Мама хинкали» в разработке. Меню и контакты временно совпадают с «Экранидзе».",
+    "Мама хинкали — хинкали, хачапури и другие блюда грузинской кухни. Рестораны в Москве, самовывоз и доставка.",
 };
 
 export default function MamaHinkaliPage() {

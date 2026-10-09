@@ -1,30 +1,39 @@
-"use client";
+import type { Metadata } from "next";
+import { HomeRedirect } from "@/components/HomeRedirect";
+import { RestaurantPage } from "@/components/RestaurantPage";
+import { restaurants } from "@/data/restaurants";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { BASE_PATH } from "@/lib/base-path";
+// Set per-domain build (see server/README.md's deployment notes / the
+// Timeweb per-domain build commands) so each domain's own root "/" shows
+// that restaurant directly, instead of the GitHub Pages-era client
+// redirect. Unset — the default `npm run build` — keeps today's redirect
+// behavior unchanged (root "/" → /ekranidze).
+const PRIMARY_RESTAURANT_ID = process.env.PRIMARY_RESTAURANT;
+const primaryRestaurant = PRIMARY_RESTAURANT_ID
+  ? restaurants.find((r) => r.id === PRIMARY_RESTAURANT_ID)
+  : undefined;
 
-const EKRANIDZE_PATH = `${BASE_PATH}/ekranidze`;
+export function generateMetadata(): Metadata {
+  if (primaryRestaurant?.id === "ekranidze") {
+    return {
+      title: "Экранидзе — грузинская кухня в Люберцах",
+      description:
+        "Экранидзе — хинкали, хачапури и другие блюда грузинской кухни по традиционным рецептам. Ресторан в Люберцах, самовывоз и доставка.",
+    };
+  }
+  if (primaryRestaurant?.id === "mama-hinkali") {
+    return {
+      title: "Мама хинкали — грузинская кухня в Москве",
+      description:
+        "Мама хинкали — хинкали, хачапури и другие блюда грузинской кухни. Рестораны в Москве, самовывоз и доставка.",
+    };
+  }
+  return {};
+}
 
-// Static export can't use next.config.js redirects or the server
-// `redirect()` function (both are unsupported with `output: "export"`),
-// so the root path redirects client-side to the default restaurant.
-// The hand-built href/meta-refresh below need BASE_PATH themselves —
-// unlike next/link, they don't get it prefixed automatically.
 export default function Home() {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.replace(EKRANIDZE_PATH);
-  }, [router]);
-
-  return (
-    <>
-      {/* No-JS / slow-JS fallback — React 19 hoists this into <head>. */}
-      <meta httpEquiv="refresh" content={`0; url=${EKRANIDZE_PATH}`} />
-      <p className="p-6 text-sm text-muted-foreground">
-        Переходим на <a href={EKRANIDZE_PATH} className="underline">Экранидзе</a>…
-      </p>
-    </>
-  );
+  if (primaryRestaurant) {
+    return <RestaurantPage restaurant={primaryRestaurant} />;
+  }
+  return <HomeRedirect />;
 }
