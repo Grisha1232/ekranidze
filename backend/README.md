@@ -25,6 +25,21 @@ points at that same shared instance rather than hosting its own copy.
 - `admin/` — session-login admin panel (single shared account) covering
   every editable field: hero/about/contacts text, amenities, addresses,
   menu categories/items, free-form sections, and an orders list.
+- `lib/yandex_rating.php`, `cron/update_ratings.php` — scrapes each
+  restaurant's real Yandex Maps org page (`restaurants.yandex_reviews_url`,
+  also shown as the "отзывы" link) for its aggregate rating and writes it to
+  `restaurants.rating_value` + `rating_updated_at`. Org pages render this as
+  plain schema.org microdata server-side (no JS/headless browser needed) —
+  anchored on the `itemType="http://schema.org/AggregateRating"` block
+  specifically, not the first `ratingValue` on the page, since individual
+  review ratings use the same attribute name and can appear earlier in the
+  HTML. Needs a browser-like `CURLOPT_USERAGENT` or Yandex serves a stripped
+  page with no microdata. Run manually: `php cron/update_ratings.php`
+  (prints what it updated, skips — doesn't blank out — a restaurant whose
+  page didn't parse). Schedule it via Timeweb's panel cron UI (not
+  `crontab -e`, which is blocked on this hosting): command
+  `php /home/c/ci004114/ekranidze/public_html/backend/cron/update_ratings.php`,
+  once or twice a day is plenty.
 
 ## Local setup
 
@@ -68,7 +83,5 @@ only lives on the server).
 - No "change admin password" UI yet — update `admin_users.password_hash`
   directly (PHP `password_hash($pw, PASSWORD_DEFAULT)`) if it needs to
   change.
-- Yandex rating: not automated yet — `restaurants.rating_value` /
-  `yandex_reviews_url` are edited by hand via the admin panel for now.
 - Payment processing — separate, later (see the CLAUDE.md "Legal
   compliance" section for what 54-ФЗ requires once that's wired up).

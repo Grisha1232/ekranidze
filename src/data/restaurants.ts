@@ -77,7 +77,7 @@ export const restaurants: Restaurant[] = [
       "Готовим по традиционным грузинским рецептам — от хачапури по-аджарски до наваристого харчо. Стараемся брать свежие сезонные продукты и держать в меню и классику, и домашние блюда, которые не встретишь в обычном ресторане.",
       "Внутри — тёплая, семейная атмосфера: сюда приходят и на ужин с детьми, и посидеть с друзьями на веранде летним вечером.",
     ],
-    ratingValue: "4.8",
+    ratingValue: "4.9",
     phone: "+7 901 513-71-96",
     phoneHref: "tel:+79015137196",
     telegram: "https://telegram.me/ekranidze",
@@ -119,7 +119,7 @@ export const restaurants: Restaurant[] = [
     aboutParagraphs: [
       "Раздел «О нас» для «Мама хинкали» ещё не наполнен реальным текстом — это временная заглушка до получения материалов от клиента.",
     ],
-    ratingValue: "—",
+    ratingValue: "5.0",
     phone: "+7 499 455-66-21",
     phoneHref: "tel:+74994556621",
     legalInfo: "ИНН 9725187088 · ОГРН 1257700255823",
@@ -143,7 +143,6 @@ export const restaurants: Restaurant[] = [
       },
     ],
     amenities: [],
-    yandexReviewsUrl:
-      "https://yandex.ru/maps/213/moscow/house/ulitsa_shukhova_21/37.608805,55.716351",
+    yandexReviewsUrl: "https://yandex.ru/maps/org/mama_khinkali/73853640987/",
   },
 ];
