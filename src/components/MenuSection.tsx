@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { MenuItemCard } from "@/components/MenuItemCard";
-import { getMenu, type MenuGroup } from "@/data/menu";
+import { useContent } from "@/context/ContentContext";
+import type { MenuGroup } from "@/data/menu";
 
 const GROUP_LABELS: Record<MenuGroup, string> = {
   food: "Еда",
@@ -10,6 +11,7 @@ const GROUP_LABELS: Record<MenuGroup, string> = {
 };
 
 export function MenuSection({ restaurantId }: { restaurantId: string }) {
+  const { getMenu } = useContent();
   const { categories, menuItems } = getMenu(restaurantId);
   const [group, setGroup] = useState<MenuGroup>("food");
   const groupCategories = categories.filter((c) => c.group === group);

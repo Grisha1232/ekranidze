@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Manrope, Playfair_Display } from "next/font/google";
 import localFont from "next/font/local";
 import { CartProvider } from "@/context/CartContext";
+import { ContentProvider } from "@/context/ContentContext";
 import "./globals.css";
 
 const bodyFont = Manrope({
@@ -39,7 +40,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${bodyFont.variable} ${displayFont.variable} ${georgianFont.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col font-sans">
-        <CartProvider>{children}</CartProvider>
+        <ContentProvider>
+          <CartProvider>{children}</CartProvider>
+        </ContentProvider>
       </body>
     </html>
   );

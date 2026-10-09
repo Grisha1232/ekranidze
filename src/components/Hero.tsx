@@ -1,7 +1,11 @@
+"use client";
+
 import { LogoCarousel } from "@/components/LogoCarousel";
-import { restaurants, type Restaurant } from "@/data/restaurants";
+import { useContent } from "@/context/ContentContext";
+import type { Restaurant } from "@/data/restaurants";
 
 export function Hero({ restaurant }: { restaurant: Restaurant }) {
+  const { restaurants } = useContent();
   const slides = restaurants.map((r) => ({
     id: r.id,
     label: r.shortLabel,

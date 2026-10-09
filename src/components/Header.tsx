@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { CartButton } from "@/components/CartButton";
-import { restaurants, type Restaurant } from "@/data/restaurants";
+import { useContent } from "@/context/ContentContext";
+import type { Restaurant } from "@/data/restaurants";
 import { BASE_PATH } from "@/lib/base-path";
 
 const NAV_LINKS = [
@@ -12,6 +15,7 @@ const NAV_LINKS = [
 ];
 
 export function Header({ restaurant }: { restaurant: Restaurant }) {
+  const { restaurants } = useContent();
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">

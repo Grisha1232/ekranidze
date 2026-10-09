@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { MenuItemThumbnail } from "@/components/MenuItemThumbnail";
 import { useCart } from "@/context/CartContext";
-import { restaurants } from "@/data/restaurants";
+import { useContent } from "@/context/ContentContext";
 
 type FulfillmentMethod = "pickup" | "delivery";
 type PaymentMethod = "cash" | "card" | "online";
@@ -18,6 +18,7 @@ const ORDERS_API_URL = process.env.NEXT_PUBLIC_ORDERS_API_URL;
 export function CheckoutPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { restaurants } = useContent();
   const restaurant =
     restaurants.find((r) => r.id === searchParams.get("restaurant")) ?? restaurants[0];
 

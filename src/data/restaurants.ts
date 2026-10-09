@@ -40,6 +40,23 @@ export type Restaurant = {
    *  a stub pending real input from the client — see CLAUDE.md on not
    *  treating business data as throwaway placeholder text once it's real. */
   isPlaceholder?: boolean;
+  /** Shown as pills under "О нас" — admin-editable, empty while unknown
+   *  rather than guessed (see isPlaceholder). */
+  amenities: string[];
+  /** Link to the restaurant's real Yandex reviews page, shown next to
+   *  ratingValue. */
+  yandexReviewsUrl?: string;
+  /** Free-form admin-added blocks — see backend/sql/schema.sql's
+   *  custom_sections table. Empty in the static fallback; only populated
+   *  once fetched live from the content API. */
+  customSections?: CustomSection[];
+};
+
+export type CustomSection = {
+  id: number;
+  placement: "after_hero" | "after_menu" | "after_about" | "after_delivery";
+  title: string;
+  body: string;
 };
 
 export const restaurants: Restaurant[] = [
@@ -74,6 +91,17 @@ export const restaurants: Restaurant[] = [
         yandexUrl: "https://yandex.ru/maps/org/169306513048",
       },
     ],
+    amenities: [
+      "Детское меню",
+      "Летняя веранда",
+      "Wi-Fi",
+      "Можно с собакой",
+      "Оплата картой",
+      "Кофе и чай навынос",
+      "Спортивные трансляции",
+      "Проектор для мероприятий",
+    ],
+    yandexReviewsUrl: "https://yandex.ru/maps/org/169306513048",
   },
   {
     id: "mama-hinkali",
@@ -114,5 +142,8 @@ export const restaurants: Restaurant[] = [
           "https://yandex.ru/maps/213/moscow/house/dukhovskoy_pereulok_17s16/Z04YcAZmTkIEQFtvfXtxdXRkYA==/",
       },
     ],
+    amenities: [],
+    yandexReviewsUrl:
+      "https://yandex.ru/maps/213/moscow/house/ulitsa_shukhova_21/37.608805,55.716351",
   },
 ];

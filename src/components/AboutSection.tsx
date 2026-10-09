@@ -1,18 +1,10 @@
-import { getMenu } from "@/data/menu";
+"use client";
+
+import { useContent } from "@/context/ContentContext";
 import type { Restaurant } from "@/data/restaurants";
 
-const AMENITIES = [
-  "Детское меню",
-  "Летняя веранда",
-  "Wi-Fi",
-  "Можно с собакой",
-  "Оплата картой",
-  "Кофе и чай навынос",
-  "Спортивные трансляции",
-  "Проектор для мероприятий",
-];
-
 export function AboutSection({ restaurant }: { restaurant: Restaurant }) {
+  const { getMenu } = useContent();
   const { categories, menuItems } = getMenu(restaurant.id);
   const foodCategories = categories.filter((c) => c.group === "food");
   const foodItemCount = menuItems.filter((item) =>
@@ -54,18 +46,26 @@ export function AboutSection({ restaurant }: { restaurant: Restaurant }) {
                 <p className="mt-1 text-xs text-muted-foreground">
                   {stat.label}
                 </p>
+                {stat.label === "рейтинг на Яндекс Картах" && restaurant.yandexReviewsUrl && (
+                  <a
+                    href={restaurant.yandexReviewsUrl}
+                    className="mt-1 block text-xs text-muted-foreground underline hover:text-foreground"
+                  >
+                    отзывы
+                  </a>
+                )}
               </div>
             ))}
           </div>
         </div>
 
         <div className="mt-10 flex flex-wrap gap-2">
-          {restaurant.isPlaceholder ? (
+          {restaurant.amenities.length === 0 ? (
             <span className="rounded-full border border-dashed border-border bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground">
               Удобства уточняются
             </span>
           ) : (
-            AMENITIES.map((item) => (
+            restaurant.amenities.map((item) => (
               <span
                 key={item}
                 className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground"
