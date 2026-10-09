@@ -94,6 +94,24 @@ CREATE TABLE IF NOT EXISTS custom_sections (
   FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Every checkout submission, whether or not Telegram delivery succeeded —
+-- so a restaurant with no bot configured yet still has a record of orders
+-- instead of them vanishing (see backend/admin/orders.php).
+CREATE TABLE IF NOT EXISTS orders (
+  id                INT AUTO_INCREMENT PRIMARY KEY,
+  restaurant_id     VARCHAR(50) NOT NULL,
+  customer_name     VARCHAR(255) NOT NULL,
+  customer_phone    VARCHAR(50) NOT NULL,
+  fulfillment       VARCHAR(20) NOT NULL,
+  address           VARCHAR(255) NULL,
+  payment           VARCHAR(20) NOT NULL,
+  comment           TEXT NULL,
+  items_json        TEXT NOT NULL,
+  total_price       INT NOT NULL,
+  telegram_delivered TINYINT(1) NOT NULL DEFAULT 0,
+  created_at        TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS admin_users (
   id            INT AUTO_INCREMENT PRIMARY KEY,
   username      VARCHAR(100) NOT NULL UNIQUE,

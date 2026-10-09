@@ -12,24 +12,37 @@ the section components are the client's real business data, sourced from their
 existing site (ekranidze.clients.site) — keep them in sync if the client's menu or
 contact info changes; don't treat them as throwaway placeholder text. Photos are
 still placeholder gradients (`PlaceholderImage`) pending real photography. The "О
-нас" copy and amenities list were written fresh rather than copied from the
-reference site — do the same for any future copy pulled from there. The cart holds
-state client-side; checkout (`CheckoutPage`) only sends a network request when
-`NEXT_PUBLIC_ORDERS_API_URL` is set at build time — unset (today's state, including
-the live GitHub Pages build), it stays the old local-only stub, no network call at
-all. See the published delivery-research
-artifact (linked in conversation history) for the plan on how ordering should eventually
-work — short version: real orders currently go through Yandex.Eda directly, not this
-site; the recommended path to a functional cart is Yandex Delivery's API (separate,
-free-to-integrate product from the Yandex.Eda marketplace listing), not the Yandex.Eda
-partner API (which is one-way POS→Yandex.Eda and can't accept orders from an external site).
+нас" copy was written fresh rather than copied from the reference site — do the
+same for any future copy pulled from there.
 
-`server/` is a separate standalone backend (its own `package.json`, not part of
-the Next.js app) that the checkout form POSTs to once wired up — see
-`server/README.md`. It forwards new orders to the right restaurant's Telegram
-chat; a restaurant with no bot token configured yet just logs the order instead
-of failing (stub mode). Not deployed anywhere yet — meant for the Timeweb VPS
-once that's set up, independently of the GitHub Pages static site.
+**Two hosts, two different purposes.** GitHub Pages (`.github/workflows/deploy-pages.yml`,
+auto-deploys on every push to `main`) is the original static deployment — still
+live, untouched by anything below, 100% static with zero network calls. The
+*real* site is now on Timeweb shared hosting (plain PHP/MySQL hosting, no
+root, no Node — see `backend/README.md`), built and deployed by hand (not
+automated in CI yet): two separate static exports, one per domain, each with
+`PRIMARY_RESTAURANT` set so that restaurant renders at the domain's own root
+instead of the GitHub-Pages-era client redirect, and both pointed at the
+*same* shared `backend/` instance via `NEXT_PUBLIC_CONTENT_API_URL` (set only
+for these builds — unset, including the GitHub Pages build, everything below
+silently reduces to the old static-only behavior, nothing breaks).
+
+`backend/` (PHP + MySQL) is what makes the Timeweb deployment "real": a public
+read API (`restaurants.ts`/`menu.ts`'s data, but live from a DB an admin can
+edit — see `backend/admin/`, a password-gated CMS) and an orders endpoint
+(`CheckoutPage` POSTs there when `NEXT_PUBLIC_CONTENT_API_URL` is set; always
+records the order, also pushes to the restaurant's Telegram chat once
+`telegram_targets` has a bot configured for it — stub/log-only otherwise).
+`src/data/restaurants.ts`/`menu.ts` are **not** dead code — they're the
+synchronous first paint and the fallback when the backend is unreachable or
+unconfigured (`ContentContext` seeds from them, then swaps in live data).
+See the published delivery-research artifact (linked in conversation
+history) for the original plan on real order fulfillment — short version:
+real orders currently go through Yandex.Eda directly, not this site; the
+recommended path to a functional cart is Yandex Delivery's API (separate,
+free-to-integrate product from the Yandex.Eda marketplace listing), not the
+Yandex.Eda partner API (one-way POS→Yandex.Eda, can't accept orders from an
+external site).
 
 ## Commands
 
@@ -89,11 +102,10 @@ around personal data tightened as recently as July 2025.
 - **152-ФЗ (personal data) — done.** `/privacy` (`src/app/privacy/page.tsx`)
   publishes the Политика обработки персональных данных, and `CheckoutPage`
   requires an explicit consent checkbox (linking to it and to `/oferta`)
-  before a submission is allowed, real or stub. Still outstanding: Russian
-  citizens' data must actually be stored on servers located in Russia once
-  there's a real backend (152-ФЗ Art. 18(5)) — satisfied once `server/` is on
-  Timeweb rather than a foreign host. Repeat violations carry turnover-based
-  fines (1–3% of annual revenue).
+  before a submission is allowed, real or stub. Data-at-rest localization
+  (152-ФЗ Art. 18(5)) is satisfied — `backend/`'s MySQL DB lives on the
+  Timeweb hosting (Russia), not a foreign host. Repeat violations carry
+  turnover-based fines (1–3% of annual revenue).
 - **Law "On Protection of Consumer Rights" (distance selling) — done.**
   `/oferta` (`src/app/oferta/page.tsx`) covers seller identity (both
   restaurants' legal name/address/ИНН/ОГРН, pulled from `restaurants.ts`),

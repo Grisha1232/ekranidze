@@ -3,7 +3,7 @@ import { HomeRedirect } from "@/components/HomeRedirect";
 import { RestaurantPage } from "@/components/RestaurantPage";
 import { restaurants } from "@/data/restaurants";
 
-// Set per-domain build (see server/README.md's deployment notes / the
+// Set per-domain build (see backend/README.md's deployment notes / the
 // Timeweb per-domain build commands) so each domain's own root "/" shows
 // that restaurant directly, instead of the GitHub Pages-era client
 // redirect. Unset — the default `npm run build` — keeps today's redirect

@@ -20,6 +20,7 @@ function admin_header(string $title): void
     <span class="muted"><?= htmlspecialchars($admin['username']) ?></span>
     &nbsp;
     <a class="button secondary" href="index.php">К списку ресторанов</a>
+    <a class="button secondary" href="orders.php">Заказы</a>
     <a class="button secondary" href="logout.php">Выйти</a>
   </div>
   <?php endif; ?>

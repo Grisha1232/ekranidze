@@ -10,10 +10,10 @@ import { useContent } from "@/context/ContentContext";
 type FulfillmentMethod = "pickup" | "delivery";
 type PaymentMethod = "cash" | "card" | "online";
 
-// Set once the orders backend (see server/) is deployed and its URL is
-// passed in at build time — see server/README.md. Until then this stays
-// undefined and checkout keeps today's local-only stub behavior.
-const ORDERS_API_URL = process.env.NEXT_PUBLIC_ORDERS_API_URL;
+// Same backend ContentContext fetches from (backend/api/) — orders.php lives
+// alongside restaurants.php/menu.php there. Unset, checkout keeps the
+// local-only stub behavior (no network request at all).
+const ORDERS_API_URL = process.env.NEXT_PUBLIC_CONTENT_API_URL;
 
 export function CheckoutPage() {
   const router = useRouter();
@@ -65,7 +65,7 @@ export function CheckoutPage() {
 
     setSubmitting(true);
     try {
-      const res = await fetch(`${ORDERS_API_URL}/api/orders`, {
+      const res = await fetch(`${ORDERS_API_URL}/orders.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

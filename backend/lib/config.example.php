@@ -16,4 +16,13 @@ return [
         'http://mama-hinkali.ru',
         'http://localhost:3000',
     ],
+    // Create each bot via @BotFather in Telegram (/newbot), add it to that
+    // restaurant's staff chat, and find the chat id (message the bot, then
+    // check https://api.telegram.org/bot<token>/getUpdates). A restaurant
+    // left blank here just has its orders recorded in the `orders` table
+    // without a Telegram push — see backend/admin/orders.php.
+    'telegram_targets' => [
+        'ekranidze' => ['token' => '', 'chat_id' => ''],
+        'mama-hinkali' => ['token' => '', 'chat_id' => ''],
+    ],
 ];
