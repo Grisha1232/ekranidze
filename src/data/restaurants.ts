@@ -101,10 +101,7 @@ export const restaurants: Restaurant[] = [
           "Московская обл., Люберцы, мкр. Городок Б, ул. 3-е Почтовое Отделение, 68/4",
         coords: [37.865337, 55.687918],
         yandexUrl: "https://yandex.ru/maps/org/169306513048",
-        metro: [
-          { name: "Жулебино", line: "purple" },
-          { name: "Котельники", line: "purple" },
-        ],
+        metro: [{ name: "Жулебино", line: "purple" }],
       },
     ],
     amenities: [

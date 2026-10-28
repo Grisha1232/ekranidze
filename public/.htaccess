@@ -12,6 +12,25 @@ RewriteEngine On
 RewriteCond %{HTTP:X-Forwarded-Proto} !https
 RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
+# Each restaurant only truly lives on its own domain, and www folds into
+# the bare domain — one build serves all four hostnames identically, so
+# nothing server-side stops a direct link, bookmark, or search result for
+# the wrong combination (e.g. www.mama-hinkali.ru/ekranidze, or bare
+# www.ekranidze.ru) from silently rendering under the wrong URL instead of
+# sending the visitor to where it actually belongs. Order matters: the
+# first two rules fold a cross-restaurant path AND www into a single
+# redirect; only a same-restaurant www request falls through to the third.
+RewriteCond %{HTTP_HOST} ^(www\.)?mama-hinkali\.ru$ [NC]
+RewriteCond %{REQUEST_URI} ^/ekranidze(/.*)?$
+RewriteRule ^ https://ekranidze.ru%{REQUEST_URI} [R=301,L,QSA]
+
+RewriteCond %{HTTP_HOST} ^(www\.)?ekranidze\.ru$ [NC]
+RewriteCond %{REQUEST_URI} ^/mama-hinkali(/.*)?$
+RewriteRule ^ https://mama-hinkali.ru%{REQUEST_URI} [R=301,L,QSA]
+
+RewriteCond %{HTTP_HOST} ^www\.(ekranidze\.ru|mama-hinkali\.ru)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L,QSA]
+
 # Next's static export writes both a route/ directory of RSC payloads *and*
 # a route.html file for the same path. Deliberately NOT excluding `-d`
 # matches here: every route has a same-named directory (the RSC payload

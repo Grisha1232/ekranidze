@@ -13,3 +13,16 @@ export const RESTAURANT_PRIMARY_ORIGIN: Record<string, string> = {
   ekranidze: "https://ekranidze.ru",
   "mama-hinkali": "https://mama-hinkali.ru",
 };
+
+// www.ekranidze.ru / www.mama-hinkali.ru resolve and serve the same build
+// (DNS/hosting defaults to pointing www at the same place) — strip the
+// prefix before comparing against RESTAURANT_PRIMARY_ORIGIN's bare-domain
+// values, or a visitor on the www host never matches and the cross-domain
+// redirect below silently never fires. public/.htaccess also redirects
+// www → bare domain server-side (and handles direct navigation to the
+// wrong restaurant's domain, e.g. a bookmarked or shared link) — this is
+// just the client-side fast path for the chooser's own click handler,
+// which can't rely on a server redirect mid-SPA-navigation.
+export function normalizeOrigin(origin: string): string {
+  return origin.replace(/^https:\/\/www\./, "https://");
+}

@@ -25,7 +25,6 @@ INSERT INTO restaurant_amenities (restaurant_id, sort_order, label) VALUES ('ekr
 INSERT INTO restaurant_amenities (restaurant_id, sort_order, label) VALUES ('ekranidze', 7, 'Проектор для мероприятий');
 INSERT INTO restaurant_addresses (id, restaurant_id, sort_order, label, address_text, lon, lat, yandex_url) VALUES ('ekranidze-main', 'ekranidze', 0, NULL, 'Московская обл., Люберцы, мкр. Городок Б, ул. 3-е Почтовое Отделение, 68/4', 37.865337, 55.687918, 'https://yandex.ru/maps/org/169306513048');
 INSERT INTO address_metro_stations (address_id, sort_order, name, line) VALUES ('ekranidze-main', 0, 'Жулебино', 'purple');
-INSERT INTO address_metro_stations (address_id, sort_order, name, line) VALUES ('ekranidze-main', 1, 'Котельники', 'purple');
 INSERT INTO menu_categories (restaurant_id, id, sort_order, title, menu_group) VALUES ('ekranidze', 'cold', 0, 'Холодные закуски', 'food');
 INSERT INTO menu_categories (restaurant_id, id, sort_order, title, menu_group) VALUES ('ekranidze', 'salads', 1, 'Салаты', 'food');
 INSERT INTO menu_categories (restaurant_id, id, sort_order, title, menu_group) VALUES ('ekranidze', 'khinkali', 2, 'Хинкали', 'food');

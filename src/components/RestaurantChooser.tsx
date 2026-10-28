@@ -9,8 +9,8 @@ import type { Restaurant, RestaurantAddress } from "@/data/restaurants";
 import { withAssetVersion } from "@/lib/asset-version";
 import { BASE_PATH } from "@/lib/base-path";
 import { METRO_LINE_COLORS } from "@/lib/metro";
-import { getChosenRestaurantId, setChosenRestaurantId } from "@/lib/restaurant-choice";
-import { RESTAURANT_PRIMARY_ORIGIN } from "@/lib/restaurant-domains";
+import { getChosenRestaurantId, setChosenRestaurant } from "@/lib/restaurant-choice";
+import { normalizeOrigin, RESTAURANT_PRIMARY_ORIGIN } from "@/lib/restaurant-domains";
 
 // A restaurant with more than one address (currently "Мама хинкали") shows
 // one card per address rather than one card for the restaurant — the client
@@ -49,8 +49,8 @@ export function RestaurantChooser() {
     setReady(true);
   }, [router, restaurants]);
 
-  const choose = (id: string, path: string) => {
-    setChosenRestaurantId(id);
+  const choose = (id: string, path: string, addressId?: string) => {
+    setChosenRestaurant(id, addressId);
 
     // Cross-domain: if the chooser was opened on the OTHER restaurant's own
     // domain (e.g. picking "Экранидзе" while on mama-hinkali.ru), send the
@@ -60,7 +60,7 @@ export function RestaurantChooser() {
     // the known restaurant domains; any other host (localhost, GitHub
     // Pages, a .рф alias) just navigates normally.
     const targetOrigin = RESTAURANT_PRIMARY_ORIGIN[id];
-    const currentOrigin = window.location.origin;
+    const currentOrigin = normalizeOrigin(window.location.origin);
     const onKnownRestaurantDomain =
       Object.values(RESTAURANT_PRIMARY_ORIGIN).includes(currentOrigin);
     if (targetOrigin && onKnownRestaurantDomain && currentOrigin !== targetOrigin) {
@@ -94,7 +94,7 @@ export function RestaurantChooser() {
           <button
             key={key}
             type="button"
-            onClick={() => choose(r.id, r.path)}
+            onClick={() => choose(r.id, r.path, address?.id)}
             className="group flex w-full flex-col overflow-hidden rounded-2xl border border-border bg-surface text-left transition-shadow hover:shadow-lg sm:w-80"
           >
             <div className="relative h-40 w-full">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { CartButton } from "@/components/CartButton";
@@ -8,7 +8,7 @@ import type { MetroStation, Restaurant } from "@/data/restaurants";
 import { withAssetVersion } from "@/lib/asset-version";
 import { BASE_PATH } from "@/lib/base-path";
 import { METRO_LINE_COLORS } from "@/lib/metro";
-import { clearChosenRestaurant } from "@/lib/restaurant-choice";
+import { clearChosenRestaurant, getChosenAddressId } from "@/lib/restaurant-choice";
 
 const NAV_LINKS = [
   { href: "#menu", label: "Меню" },
@@ -73,7 +73,25 @@ function MetroBadges({
 export function Header({ restaurant }: { restaurant: Restaurant }) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const metroStations = uniqueMetroStations(restaurant);
+  const [chosenAddressId, setChosenAddressIdState] = useState<string | null>(null);
+
+  useEffect(() => {
+    // One-time read of sessionStorage on mount — intentional, sessionStorage
+    // isn't readable during SSR so this can't be a lazy useState initializer.
+    // Renders restaurant-wide metro (the fallback below) until this runs,
+    // same safe pattern as elsewhere in this codebase.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setChosenAddressIdState(getChosenAddressId());
+  }, []);
+
+  // A restaurant chosen with a specific address/card (e.g. Mama Khinkali's
+  // Шаболовка vs Тульская) shows only that one's metro instead of every
+  // address merged — otherwise picking one location would still surface
+  // the other location's station too, which isn't where the visitor is.
+  // Falls back to every address's stations (deduped) when there's no
+  // recorded pick — e.g. a direct link/bookmark that bypassed the chooser.
+  const chosenAddress = restaurant.addresses.find((a) => a.id === chosenAddressId);
+  const metroStations = chosenAddress?.metro ?? uniqueMetroStations(restaurant);
 
   const goToChooser = () => {
     setMenuOpen(false);
