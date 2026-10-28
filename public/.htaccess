@@ -22,3 +22,20 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}\.html -f
 RewriteRule ^(.*)$ $1.html [L]
+
+# Timeweb's server-level config sends a 1-year Cache-Control on static
+# files by extension — great for /_next/static/*.js|css (the filename
+# itself changes when the content does, so a stale cache can't happen) but
+# actively harmful for .html: it's never renamed between deploys, so a
+# client that cached one keeps pointing at JS/CSS chunk hashes from a build
+# that --delete already removed from the server on the next deploy. "no-cache"
+# still lets the browser cache it — it just must revalidate (a cheap
+# ETag-based 304) before trusting that copy, so this is correctness, not a
+# performance regression. See logos/.htaccess and menu/.htaccess for the
+# same fix applied to hand-placed images, which keep the same filename
+# across deploys/admin uploads even when their content changes.
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>

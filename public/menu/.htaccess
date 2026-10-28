@@ -1,0 +1,5 @@
+# Same fix as logos/.htaccess — dish photos can be swapped under the same
+# filename too (see public/.htaccess for the full explanation).
+<IfModule mod_headers.c>
+  Header set Cache-Control "no-cache"
+</IfModule>

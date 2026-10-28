@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { PlaceholderImage } from "@/components/PlaceholderImage";
 import { useContent } from "@/context/ContentContext";
 import type { Restaurant, RestaurantAddress } from "@/data/restaurants";
+import { withAssetVersion } from "@/lib/asset-version";
 import { BASE_PATH } from "@/lib/base-path";
 import { METRO_LINE_COLORS } from "@/lib/metro";
 import { getChosenRestaurantId, setChosenRestaurantId } from "@/lib/restaurant-choice";
@@ -99,7 +100,7 @@ export function RestaurantChooser() {
             <div className="relative h-40 w-full">
               {r.logoImage ? (
                 <Image
-                  src={`${BASE_PATH}${r.logoImage}`}
+                  src={`${BASE_PATH}${withAssetVersion(r.logoImage)}`}
                   alt={r.name}
                   fill
                   sizes="(min-width: 640px) 360px, 100vw"

@@ -1,0 +1,7 @@
+# Logo files keep the same filename across deploys and admin uploads even
+# when their content changes (see public/.htaccess for the full
+# explanation) — "no-cache" forces revalidation so a logo swap shows up for
+# everyone without anyone needing to hard-refresh.
+<IfModule mod_headers.c>
+  Header set Cache-Control "no-cache"
+</IfModule>

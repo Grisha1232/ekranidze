@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { PlaceholderImage } from "@/components/PlaceholderImage";
+import { withAssetVersion } from "@/lib/asset-version";
 import { BASE_PATH } from "@/lib/base-path";
 
 export type LogoSlide = {
@@ -63,7 +64,7 @@ export function LogoCarousel({
       >
         <div className="relative h-2/3 w-2/3">
           <Image
-            src={`${BASE_PATH}${current.image}`}
+            src={`${BASE_PATH}${withAssetVersion(current.image)}`}
             alt={current.name}
             fill
             sizes="(min-width: 768px) 320px, 60vw"

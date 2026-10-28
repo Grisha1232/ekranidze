@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { PlaceholderImage } from "@/components/PlaceholderImage";
+import { withAssetVersion } from "@/lib/asset-version";
 import { BASE_PATH } from "@/lib/base-path";
 import type { MenuItem } from "@/data/menu";
 
@@ -16,7 +17,7 @@ export function MenuItemThumbnail({
     return (
       <div className={`relative overflow-hidden ${className}`}>
         <Image
-          src={`${BASE_PATH}${item.image}`}
+          src={`${BASE_PATH}${withAssetVersion(item.image)}`}
           alt={item.name}
           fill
           sizes={sizes}

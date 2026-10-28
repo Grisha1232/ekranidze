@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { CartButton } from "@/components/CartButton";
 import type { MetroStation, Restaurant } from "@/data/restaurants";
+import { withAssetVersion } from "@/lib/asset-version";
 import { BASE_PATH } from "@/lib/base-path";
 import { METRO_LINE_COLORS } from "@/lib/metro";
 import { clearChosenRestaurant } from "@/lib/restaurant-choice";
@@ -107,7 +108,7 @@ export function Header({ restaurant }: { restaurant: Restaurant }) {
           <div className="flex min-w-0 items-start gap-2">
             {restaurant.headerIcon && (
               <Image
-                src={`${BASE_PATH}${restaurant.headerIcon}`}
+                src={`${BASE_PATH}${withAssetVersion(restaurant.headerIcon)}`}
                 alt=""
                 width={28}
                 height={28}
