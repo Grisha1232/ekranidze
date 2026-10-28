@@ -63,6 +63,11 @@ function handle_logo_upload(?array $file, string $restaurantId, ?string $oldUrl 
     return handle_image_upload($file, 'logos', $restaurantId, $oldUrl);
 }
 
+function handle_header_icon_upload(?array $file, string $restaurantId, ?string $oldUrl = null): ?string
+{
+    return handle_image_upload($file, 'logos', "{$restaurantId}-header", $oldUrl);
+}
+
 function handle_dish_photo_upload(?array $file, string $restaurantId, string $itemId, ?string $oldUrl = null): ?string
 {
     return handle_image_upload($file, 'menu', "{$restaurantId}-{$itemId}", $oldUrl);

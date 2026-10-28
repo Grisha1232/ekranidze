@@ -34,13 +34,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($action === 'add_item') {
+        $image = $_POST['image'] ?: null;
+        if (($_FILES['photo_file']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE) {
+            $uploadedUrl = handle_dish_photo_upload($_FILES['photo_file'], $id, $_POST['item_id']);
+            if (!$uploadedUrl) {
+                flash('Не удалось загрузить фото — проверьте формат (PNG/JPG/WEBP) и размер (до 5 МБ). Блюдо не добавлено.', 'error');
+                header('Location: menu.php?id=' . urlencode($id) . '&category=' . urlencode($_POST['category_id']));
+                exit;
+            }
+            $image = $uploadedUrl;
+        }
         $max = $pdo->prepare('SELECT COALESCE(MAX(sort_order), -1) FROM menu_items WHERE restaurant_id = ? AND category_id = ?');
         $max->execute([$id, $_POST['category_id']]);
         $pdo->prepare('INSERT INTO menu_items (restaurant_id, id, category_id, sort_order, name, description, weight, price, tone, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')
             ->execute([
                 $id, $_POST['item_id'], $_POST['category_id'], $max->fetchColumn() + 1,
                 $_POST['name'], $_POST['description'] ?: null, $_POST['weight'] ?: null,
-                (int)$_POST['price'], $_POST['tone'], $_POST['image'] ?: null,
+                (int)$_POST['price'], $_POST['tone'], $image,
             ]);
         flash('Блюдо добавлено.');
     }
@@ -184,7 +194,7 @@ $activeCategory = $_GET['category'] ?? ($categories[0]['id'] ?? null);
 </form>
 <?php endforeach; ?>
 
-<form method="post" class="card">
+<form method="post" enctype="multipart/form-data" class="card">
   <?= csrf_field() ?>
   <input type="hidden" name="form_action" value="add_item">
   <input type="hidden" name="category_id" value="<?= htmlspecialchars($activeCategory) ?>">
@@ -201,8 +211,12 @@ $activeCategory = $_GET['category'] ?? ($categories[0]['id'] ?? null);
       <select name="tone"><option value="warm">warm</option><option value="clay">clay</option><option value="olive">olive</option></select>
     </div>
   </div>
-  <label>Фото (путь /menu/...)</label>
-  <input type="text" name="image">
+  <label>Фото (необязательно)</label>
+  <input type="text" name="image" placeholder="/menu/... или ссылка">
+  <div class="row" style="margin-top:8px;align-items:center">
+    <label class="muted" style="flex:0;white-space:nowrap">или загрузить файл:</label>
+    <input type="file" name="photo_file" accept="image/png,image/jpeg,image/webp" style="flex:1">
+  </div>
   <div style="margin-top:8px"><input type="submit" value="Добавить блюдо"></div>
 </form>
 <?php endif; ?>

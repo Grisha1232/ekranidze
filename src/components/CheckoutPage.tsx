@@ -171,52 +171,56 @@ export function CheckoutPage() {
               {lines.map((line) => (
                 <li
                   key={line.item.id}
-                  className="flex items-center gap-4 rounded-2xl border border-border bg-surface p-4"
+                  className="flex flex-col gap-3 rounded-2xl border border-border bg-surface p-4 sm:flex-row sm:items-center sm:gap-4"
                 >
-                  <MenuItemThumbnail
-                    item={line.item}
-                    className="h-16 w-16 shrink-0 rounded-xl"
-                    sizes="64px"
-                  />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-foreground">{line.item.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {line.item.price} ₽{line.item.weight ? ` · ${line.item.weight}` : ""}
+                  <div className="flex items-center gap-4">
+                    <MenuItemThumbnail
+                      item={line.item}
+                      className="h-16 w-16 shrink-0 rounded-xl"
+                      sizes="64px"
+                    />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-foreground">{line.item.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {line.item.price} ₽{line.item.weight ? ` · ${line.item.weight}` : ""}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 sm:justify-end sm:gap-4">
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setQuantity(line.item.id, restaurant.id, line.quantity - 1)
+                        }
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-sm hover:border-primary"
+                        aria-label="Уменьшить количество"
+                      >
+                        −
+                      </button>
+                      <span className="w-5 text-center text-sm">{line.quantity}</span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setQuantity(line.item.id, restaurant.id, line.quantity + 1)
+                        }
+                        className="flex h-10 w-10 items-center justify-center rounded-full border border-border text-sm hover:border-primary"
+                        aria-label="Увеличить количество"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <p className="text-sm font-medium text-foreground sm:w-16 sm:text-right">
+                      {line.item.price * line.quantity} ₽
                     </p>
-                  </div>
-                  <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      onClick={() =>
-                        setQuantity(line.item.id, restaurant.id, line.quantity - 1)
-                      }
-                      className="h-8 w-8 rounded-full border border-border text-sm hover:border-primary"
-                      aria-label="Уменьшить количество"
+                      onClick={() => removeItem(line.item.id, restaurant.id)}
+                      className="-m-2 p-2 text-xs text-muted-foreground underline-offset-2 hover:underline"
                     >
-                      −
-                    </button>
-                    <span className="w-5 text-center text-sm">{line.quantity}</span>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setQuantity(line.item.id, restaurant.id, line.quantity + 1)
-                      }
-                      className="h-8 w-8 rounded-full border border-border text-sm hover:border-primary"
-                      aria-label="Увеличить количество"
-                    >
-                      +
+                      Удалить
                     </button>
                   </div>
-                  <p className="w-16 text-right text-sm font-medium text-foreground">
-                    {line.item.price * line.quantity} ₽
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => removeItem(line.item.id, restaurant.id)}
-                    className="text-xs text-muted-foreground underline-offset-2 hover:underline"
-                  >
-                    Удалить
-                  </button>
                 </li>
               ))}
             </ul>
@@ -231,7 +235,7 @@ export function CheckoutPage() {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className={`rounded-xl border bg-surface px-3 py-2.5 outline-none focus:border-primary ${
+                  className={`rounded-xl border bg-surface px-3 py-2.5 text-base outline-none focus:border-primary ${
                     nameError ? "border-red-400" : "border-border"
                   }`}
                 />
@@ -244,7 +248,7 @@ export function CheckoutPage() {
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+7 900 000-00-00"
-                  className={`rounded-xl border bg-surface px-3 py-2.5 outline-none focus:border-primary ${
+                  className={`rounded-xl border bg-surface px-3 py-2.5 text-base outline-none focus:border-primary ${
                     phoneError ? "border-red-400" : "border-border"
                   }`}
                 />
@@ -285,7 +289,7 @@ export function CheckoutPage() {
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="Улица, дом, квартира"
-                  className={`rounded-xl border bg-surface px-3 py-2.5 outline-none focus:border-primary ${
+                  className={`rounded-xl border bg-surface px-3 py-2.5 text-base outline-none focus:border-primary ${
                     addressError ? "border-red-400" : "border-border"
                   }`}
                 />
@@ -330,7 +334,7 @@ export function CheckoutPage() {
               onChange={(e) => setComment(e.target.value)}
               rows={3}
               placeholder="Например: без лука, позвонить за 10 минут"
-              className="rounded-xl border border-border bg-surface px-3 py-2.5 outline-none focus:border-primary"
+              className="rounded-xl border border-border bg-surface px-3 py-2.5 text-base outline-none focus:border-primary"
             />
           </section>
         </div>

@@ -34,7 +34,7 @@ export function CartDrawer({ restaurantId }: { restaurantId: string }) {
           <button
             type="button"
             onClick={closeCart}
-            className="rounded-full p-1.5 text-muted-foreground hover:bg-background hover:text-foreground"
+            className="flex h-11 w-11 items-center justify-center rounded-full text-muted-foreground hover:bg-background hover:text-foreground"
             aria-label="Закрыть корзину"
           >
             ✕
@@ -68,7 +68,7 @@ export function CartDrawer({ restaurantId }: { restaurantId: string }) {
                         onClick={() =>
                           setQuantity(line.item.id, restaurantId, line.quantity - 1)
                         }
-                        className="h-7 w-7 rounded-full border border-border text-sm hover:border-primary"
+                        className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-sm hover:border-primary"
                         aria-label="Уменьшить количество"
                       >
                         −
@@ -81,7 +81,7 @@ export function CartDrawer({ restaurantId }: { restaurantId: string }) {
                         onClick={() =>
                           setQuantity(line.item.id, restaurantId, line.quantity + 1)
                         }
-                        className="h-7 w-7 rounded-full border border-border text-sm hover:border-primary"
+                        className="flex h-9 w-9 items-center justify-center rounded-full border border-border text-sm hover:border-primary"
                         aria-label="Увеличить количество"
                       >
                         +
@@ -89,7 +89,7 @@ export function CartDrawer({ restaurantId }: { restaurantId: string }) {
                       <button
                         type="button"
                         onClick={() => removeItem(line.item.id, restaurantId)}
-                        className="ml-auto text-xs text-muted-foreground underline-offset-2 hover:underline"
+                        className="-m-2 ml-auto p-2 text-xs text-muted-foreground underline-offset-2 hover:underline"
                       >
                         Удалить
                       </button>

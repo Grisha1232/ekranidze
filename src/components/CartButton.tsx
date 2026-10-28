@@ -12,7 +12,7 @@ export function CartButton({ restaurantId }: { restaurantId: string }) {
     <button
       type="button"
       onClick={openCart}
-      className="relative flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary"
+      className="relative flex h-11 items-center gap-2 rounded-full border border-border bg-surface px-4 text-sm font-medium text-foreground transition-colors hover:border-primary"
     >
       <svg
         width="18"
