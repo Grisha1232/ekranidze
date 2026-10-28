@@ -69,11 +69,11 @@ body {
     transform: translate(-50%, -50%) scale(0.15) rotate(0deg);
     opacity: 0;
   }
-  18% {
+  16% {
     opacity: 1;
     transform: translate(-50%, -50%)
-      translate(calc(var(--tx) * 0.22), calc(var(--ty) * 0.22)) scale(1.15)
-      rotate(calc(var(--rot) * 0.25));
+      translate(calc(var(--tx) * 0.2), calc(var(--ty) * 0.2)) scale(1.4)
+      rotate(calc(var(--rot) * 0.2));
   }
   100% {
     transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(0.8)
@@ -91,8 +91,57 @@ body {
   animation-fill-mode: forwards;
 }
 
+/* The flash + shockwave give the burst an actual point of impact — without
+   them it reads as "things fly past" rather than "something just exploded
+   here." Both are quick (well under the particles' own duration) so they
+   read as the trigger, not part of the ongoing animation. */
+@keyframes food-flash {
+  0% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-food-flash {
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 250, 240, 0.95) 0%,
+    rgba(255, 250, 240, 0) 62%
+  );
+  animation: food-flash 0.5s ease-out forwards;
+}
+
+@keyframes food-shockwave {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+.animate-food-shockwave {
+  top: 50%;
+  left: 50%;
+  width: 70vmin;
+  height: 70vmin;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(176, 138, 94, 0.55) 0%,
+    rgba(176, 138, 94, 0) 70%
+  );
+  animation: food-shockwave 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .animate-food-burst {
+  .animate-food-burst,
+  .animate-food-flash,
+  .animate-food-shockwave {
     animation: none;
     opacity: 0;
   }
