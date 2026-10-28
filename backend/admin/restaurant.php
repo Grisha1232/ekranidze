@@ -39,6 +39,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    if ($action === 'upload_header_icon') {
+        $url = handle_header_icon_upload($_FILES['header_icon_file'] ?? null, $id, $restaurant['header_icon']);
+        if ($url) {
+            $pdo->prepare('UPDATE restaurants SET header_icon=? WHERE id=?')->execute([$url, $id]);
+            flash('Иконка в шапке загружена.');
+        } else {
+            flash('Не удалось загрузить файл — проверьте формат (PNG/JPG/WEBP) и размер (до 5 МБ).', 'error');
+        }
+    }
+
     if ($action === 'add_paragraph') {
         $max = $pdo->prepare('SELECT COALESCE(MAX(sort_order), -1) FROM restaurant_about_paragraphs WHERE restaurant_id = ?');
         $max->execute([$id]);
@@ -96,6 +106,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         flash('Адрес удалён.');
     }
 
+    if ($action === 'add_metro') {
+        $owns = $pdo->prepare('SELECT COUNT(*) FROM restaurant_addresses WHERE id=? AND restaurant_id=?');
+        $owns->execute([$_POST['addr_id'], $id]);
+        if ($owns->fetchColumn()) {
+            $max = $pdo->prepare('SELECT COALESCE(MAX(sort_order), -1) FROM address_metro_stations WHERE address_id = ?');
+            $max->execute([$_POST['addr_id']]);
+            $pdo->prepare('INSERT INTO address_metro_stations (address_id, sort_order, name, line) VALUES (?, ?, ?, ?)')
+                ->execute([$_POST['addr_id'], $max->fetchColumn() + 1, $_POST['name'], $_POST['line']]);
+            flash('Станция метро добавлена.');
+        }
+    }
+    if ($action === 'delete_metro') {
+        $pdo->prepare('DELETE address_metro_stations FROM address_metro_stations
+            JOIN restaurant_addresses ON restaurant_addresses.id = address_metro_stations.address_id
+            WHERE address_metro_stations.id=? AND restaurant_addresses.restaurant_id=?')
+            ->execute([$_POST['metro_id'], $id]);
+        flash('Станция метро удалена.');
+    }
+
     if ($action === 'add_section') {
         $max = $pdo->prepare('SELECT COALESCE(MAX(sort_order), -1) FROM custom_sections WHERE restaurant_id = ?');
         $max->execute([$id]);
@@ -127,6 +156,8 @@ $amenitiesStmt->execute([$id]);
 $amenities = $amenitiesStmt->fetchAll();
 $addresses = $pdo->prepare('SELECT * FROM restaurant_addresses WHERE restaurant_id=? ORDER BY sort_order');
 $addresses->execute([$id]);
+$metroStmt = $pdo->prepare('SELECT * FROM address_metro_stations WHERE address_id=? ORDER BY sort_order');
+$metroLineLabels = ['purple' => 'фиолетовая', 'orange' => 'оранжевая', 'grey' => 'серая'];
 $sections = $pdo->prepare('SELECT * FROM custom_sections WHERE restaurant_id=? ORDER BY sort_order');
 $sections->execute([$id]);
 ?>
@@ -162,13 +193,19 @@ $sections->execute([$id]);
   </div>
   <div class="row">
     <div>
-      <label>Логотип для Hero</label>
+      <label>Логотип (показывается на Hero и на карточке ресторана на странице выбора)</label>
       <?php if ($restaurant['logo_image']): ?>
         <div style="margin-bottom:8px"><img src="<?= htmlspecialchars($restaurant['logo_image']) ?>" alt="" style="max-height:80px;max-width:220px;object-fit:contain;border:1px solid #ddd;border-radius:6px;padding:4px;background:#fff"></div>
       <?php endif; ?>
       <input type="text" name="logo_image" value="<?= htmlspecialchars((string)$restaurant['logo_image']) ?>" placeholder="/logos/... или ссылка">
     </div>
-    <div><label>Иконка в шапке (путь /logos/...)</label><input type="text" name="header_icon" value="<?= htmlspecialchars((string)$restaurant['header_icon']) ?>"></div>
+    <div>
+      <label>Круглая иконка в шапке сайта (рядом с названием ресторана)</label>
+      <?php if ($restaurant['header_icon']): ?>
+        <div style="margin-bottom:8px"><img src="<?= htmlspecialchars($restaurant['header_icon']) ?>" alt="" style="max-height:48px;max-width:48px;object-fit:contain;border:1px solid #ddd;border-radius:50%;padding:2px;background:#fff"></div>
+      <?php endif; ?>
+      <input type="text" name="header_icon" value="<?= htmlspecialchars((string)$restaurant['header_icon']) ?>" placeholder="/logos/... или ссылка">
+    </div>
   </div>
   <div class="row">
     <div><label>Цветовой тон плейсхолдеров</label>
@@ -186,12 +223,23 @@ $sections->execute([$id]);
 <form method="post" enctype="multipart/form-data" class="card">
   <?= csrf_field() ?>
   <input type="hidden" name="form_action" value="upload_logo">
-  <label>Загрузить логотип для Hero с компьютера (PNG/JPG/WEBP, до 5 МБ)</label>
+  <label>Загрузить логотип с компьютера (PNG/JPG/WEBP, до 5 МБ) — появится и на Hero, и на карточке выбора ресторана</label>
   <div class="row">
     <input type="file" name="logo_file" accept="image/png,image/jpeg,image/webp" required>
     <div style="flex:0"><input type="submit" value="Загрузить"></div>
   </div>
-  <p class="muted" style="margin-top:8px">Заменяет файл выше и удаляет старый загруженный файл с сервера.</p>
+  <p class="muted" style="margin-top:8px">Заменяет файл выше и удаляет старый загруженный файл с сервера. Изменение появится на сайте сразу — без пересборки сайта.</p>
+</form>
+
+<form method="post" enctype="multipart/form-data" class="card">
+  <?= csrf_field() ?>
+  <input type="hidden" name="form_action" value="upload_header_icon">
+  <label>Загрузить иконку в шапке с компьютера (PNG/JPG/WEBP, до 5 МБ)</label>
+  <div class="row">
+    <input type="file" name="header_icon_file" accept="image/png,image/jpeg,image/webp" required>
+    <div style="flex:0"><input type="submit" value="Загрузить"></div>
+  </div>
+  <p class="muted" style="margin-top:8px">Заменяет файл выше и удаляет старый загруженный файл с сервера. Изменение появится на сайте сразу — без пересборки сайта.</p>
 </form>
 
 <h2>Текст «О нас» (абзацы)</h2>
@@ -259,6 +307,36 @@ $sections->execute([$id]);
     <button type="submit" class="danger" onclick="this.form.form_action.value='delete_address'">Удалить</button>
   </div>
 </form>
+<div class="card" style="margin-top:-12px">
+  <label>Метро рядом с этим адресом (показывается на карточке выбора ресторана и в шапке сайта)</label>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin:8px 0">
+    <?php $metroStmt->execute([$a['id']]); $metroRows = $metroStmt->fetchAll(); ?>
+    <?php foreach ($metroRows as $m): ?>
+      <form method="post" class="inline-form" style="margin:0">
+        <?= csrf_field() ?>
+        <input type="hidden" name="form_action" value="delete_metro">
+        <input type="hidden" name="metro_id" value="<?= $m['id'] ?>">
+        <span class="button secondary" style="display:inline-flex;align-items:center;gap:6px">
+          <?= htmlspecialchars($m['name']) ?> (<?= htmlspecialchars($metroLineLabels[$m['line']] ?? $m['line']) ?>)
+          <button type="submit" style="padding:2px 8px">×</button>
+        </span>
+      </form>
+    <?php endforeach; ?>
+    <?php if (!$metroRows): ?><span class="muted">Пока нет.</span><?php endif; ?>
+  </div>
+  <form method="post" class="row">
+    <?= csrf_field() ?>
+    <input type="hidden" name="form_action" value="add_metro">
+    <input type="hidden" name="addr_id" value="<?= htmlspecialchars($a['id']) ?>">
+    <input type="text" name="name" placeholder="Название станции" required>
+    <select name="line">
+      <?php foreach ($metroLineLabels as $val => $lbl): ?>
+        <option value="<?= $val ?>">Ветка: <?= $lbl ?></option>
+      <?php endforeach; ?>
+    </select>
+    <div style="flex:0"><input type="submit" value="Добавить станцию"></div>
+  </form>
+</div>
 <?php endforeach; ?>
 <form method="post" class="card">
   <?= csrf_field() ?>

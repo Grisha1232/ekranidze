@@ -1,3 +1,12 @@
+/** Real Moscow Metro line colors (official, not invented) — drives the
+ *  colored dot on RestaurantChooser's metro badges. */
+export type MetroLine = "purple" | "orange" | "grey";
+
+export type MetroStation = {
+  name: string;
+  line: MetroLine;
+};
+
 export type RestaurantAddress = {
   id: string;
   /** Shown above the address when a restaurant has more than one location. */
@@ -8,6 +17,9 @@ export type RestaurantAddress = {
    *  instead of guessing a pin. */
   coords?: [number, number];
   yandexUrl?: string;
+  /** Nearest metro station(s) for this address — shown on
+   *  RestaurantChooser's cards so visitors can pick by proximity. */
+  metro?: MetroStation[];
 };
 
 export type Restaurant = {
@@ -21,7 +33,7 @@ export type Restaurant = {
    *  PlaceholderImage text in the Hero logo carousel when present. */
   logoImage?: string;
   /** Small round badge in public/logos/ — shown next to this restaurant's
-   *  name in the header switcher, but only while it's the active page. */
+   *  name in the page header. */
   headerIcon?: string;
   tone: "warm" | "clay" | "olive";
   badge: string;
@@ -89,6 +101,10 @@ export const restaurants: Restaurant[] = [
           "Московская обл., Люберцы, мкр. Городок Б, ул. 3-е Почтовое Отделение, 68/4",
         coords: [37.865337, 55.687918],
         yandexUrl: "https://yandex.ru/maps/org/169306513048",
+        metro: [
+          { name: "Жулебино", line: "purple" },
+          { name: "Котельники", line: "purple" },
+        ],
       },
     ],
     amenities: [
@@ -132,6 +148,7 @@ export const restaurants: Restaurant[] = [
         coords: [37.608805, 55.716351],
         yandexUrl:
           "https://yandex.ru/maps/213/moscow/house/ulitsa_shukhova_21/37.608805,55.716351",
+        metro: [{ name: "Шаболовка", line: "orange" }],
       },
       {
         id: "mama-hinkali-dukhovskoy",
@@ -140,6 +157,7 @@ export const restaurants: Restaurant[] = [
         coords: [37.616773, 55.704874],
         yandexUrl:
           "https://yandex.ru/maps/213/moscow/house/dukhovskoy_pereulok_17s16/Z04YcAZmTkIEQFtvfXtxdXRkYA==/",
+        metro: [{ name: "Тульская", line: "grey" }],
       },
     ],
     amenities: [],

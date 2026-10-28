@@ -20,12 +20,21 @@ auto-deploys on every push to `main`) is the original static deployment — stil
 live, untouched by anything below, 100% static with zero network calls. The
 *real* site is now on Timeweb shared hosting (plain PHP/MySQL hosting, no
 root, no Node — see `backend/README.md`), built and deployed by hand (not
-automated in CI yet): two separate static exports, one per domain, each with
-`PRIMARY_RESTAURANT` set so that restaurant renders at the domain's own root
-instead of the GitHub-Pages-era client redirect, and both pointed at the
-*same* shared `backend/` instance via `NEXT_PUBLIC_CONTENT_API_URL` (set only
-for these builds — unset, including the GitHub Pages build, everything below
-silently reduces to the old static-only behavior, nothing breaks).
+automated in CI yet): one static export, rsynced as-is to all four production
+domains (ekranidze.ru/.рф, mama-hinkali.ru/.рф), pointed at the shared
+`backend/` instance via `NEXT_PUBLIC_CONTENT_API_URL` (set only for this
+build — unset, including the GitHub Pages build, everything below silently
+reduces to the old static-only behavior, nothing breaks). The root route
+(`src/app/page.tsx`) always renders `RestaurantChooser`, a client-side
+restaurant picker — on every domain, every fresh visit lands there first and
+only shows a restaurant's actual page after the visitor picks one.
+`RestaurantChooser` remembers the pick in `sessionStorage` (by client
+request: it should persist only for that visit, not across a later visit —
+`localStorage` would outlive the tab/session and skip the picker next time),
+so it only needs to ask once per session; it skips straight to the restaurant
+without re-prompting on any later root-path hit in the same session. There is
+no more per-domain `PRIMARY_RESTAURANT` build flag — one build now serves
+every domain identically.
 
 `backend/` (PHP + MySQL) is what makes the Timeweb deployment "real": a public
 read API (`restaurants.ts`/`menu.ts`'s data, but live from a DB an admin can

@@ -1,39 +1,18 @@
 import type { Metadata } from "next";
-import { HomeRedirect } from "@/components/HomeRedirect";
-import { RestaurantPage } from "@/components/RestaurantPage";
-import { restaurants } from "@/data/restaurants";
+import { RestaurantChooser } from "@/components/RestaurantChooser";
 
-// Set per-domain build (see backend/README.md's deployment notes / the
-// Timeweb per-domain build commands) so each domain's own root "/" shows
-// that restaurant directly, instead of the GitHub Pages-era client
-// redirect. Unset — the default `npm run build` — keeps today's redirect
-// behavior unchanged (root "/" → /ekranidze).
-const PRIMARY_RESTAURANT_ID = process.env.PRIMARY_RESTAURANT;
-const primaryRestaurant = PRIMARY_RESTAURANT_ID
-  ? restaurants.find((r) => r.id === PRIMARY_RESTAURANT_ID)
-  : undefined;
-
-export function generateMetadata(): Metadata {
-  if (primaryRestaurant?.id === "ekranidze") {
-    return {
-      title: "Экранидзе — грузинская кухня в Люберцах",
-      description:
-        "Экранидзе — хинкали, хачапури и другие блюда грузинской кухни по традиционным рецептам. Ресторан в Люберцах, самовывоз и доставка.",
-    };
-  }
-  if (primaryRestaurant?.id === "mama-hinkali") {
-    return {
-      title: "Мама хинкали — грузинская кухня в Москве",
-      description:
-        "Мама хинкали — хинкали, хачапури и другие блюда грузинской кухни. Рестораны в Москве, самовывоз и доставка.",
-    };
-  }
-  return {};
-}
+// The client wants every production domain (ekranidze.ru/.рф,
+// mama-hinkali.ru/.рф) to land here first and let the visitor pick a
+// restaurant, instead of a domain jumping straight to "its own" restaurant —
+// see RestaurantChooser for the per-visit (sessionStorage) persistence of
+// that choice. One build now serves every domain; there's no more
+// per-domain PRIMARY_RESTAURANT build flag.
+export const metadata: Metadata = {
+  title: "Грузинская кухня — выберите ресторан",
+  description:
+    "Экранидзе и Мама хинкали — хинкали, хачапури и другие блюда грузинской кухни. Выберите ресторан, чтобы посмотреть меню, адреса и доставку.",
+};
 
 export default function Home() {
-  if (primaryRestaurant) {
-    return <RestaurantPage restaurant={primaryRestaurant} />;
-  }
-  return <HomeRedirect />;
+  return <RestaurantChooser />;
 }

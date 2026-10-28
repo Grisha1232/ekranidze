@@ -43,3 +43,57 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+/* Anchor nav (header menu, Hero's "Смотреть меню"/"Условия доставки")
+   scrolls smoothly to the target section instead of jumping straight there
+   — the client wants to actually see it travel to where the section is.
+   scroll-margin-top keeps the sticky header from covering the section's
+   top once it lands. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+[id] {
+  scroll-margin-top: 5rem;
+}
+
+/* Client's requested easter egg, on every restaurant-page open (any
+   restaurant, every time — not RestaurantChooser) — khinkali and khachapuri
+   burst outward from the center of the screen. See FoodFlyIn.tsx.
+   --tx/--ty/--rot are set per piece inline; only transform+opacity animate,
+   which keeps this cheap to run even with many pieces on screen at once. */
+@keyframes food-burst {
+  0% {
+    transform: translate(-50%, -50%) scale(0.15) rotate(0deg);
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+    transform: translate(-50%, -50%)
+      translate(calc(var(--tx) * 0.22), calc(var(--ty) * 0.22)) scale(1.15)
+      rotate(calc(var(--rot) * 0.25));
+  }
+  100% {
+    transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(0.8)
+      rotate(var(--rot));
+    opacity: 0;
+  }
+}
+
+.animate-food-burst {
+  top: 50%;
+  left: 50%;
+  will-change: transform, opacity;
+  animation-name: food-burst;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-fill-mode: forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-food-burst {
+    animation: none;
+    opacity: 0;
+  }
+}

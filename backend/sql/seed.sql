@@ -6,6 +6,7 @@ TRUNCATE restaurants;
 TRUNCATE restaurant_about_paragraphs;
 TRUNCATE restaurant_amenities;
 TRUNCATE restaurant_addresses;
+TRUNCATE address_metro_stations;
 TRUNCATE menu_categories;
 TRUNCATE menu_items;
 TRUNCATE custom_sections;
@@ -23,6 +24,8 @@ INSERT INTO restaurant_amenities (restaurant_id, sort_order, label) VALUES ('ekr
 INSERT INTO restaurant_amenities (restaurant_id, sort_order, label) VALUES ('ekranidze', 6, 'Спортивные трансляции');
 INSERT INTO restaurant_amenities (restaurant_id, sort_order, label) VALUES ('ekranidze', 7, 'Проектор для мероприятий');
 INSERT INTO restaurant_addresses (id, restaurant_id, sort_order, label, address_text, lon, lat, yandex_url) VALUES ('ekranidze-main', 'ekranidze', 0, NULL, 'Московская обл., Люберцы, мкр. Городок Б, ул. 3-е Почтовое Отделение, 68/4', 37.865337, 55.687918, 'https://yandex.ru/maps/org/169306513048');
+INSERT INTO address_metro_stations (address_id, sort_order, name, line) VALUES ('ekranidze-main', 0, 'Жулебино', 'purple');
+INSERT INTO address_metro_stations (address_id, sort_order, name, line) VALUES ('ekranidze-main', 1, 'Котельники', 'purple');
 INSERT INTO menu_categories (restaurant_id, id, sort_order, title, menu_group) VALUES ('ekranidze', 'cold', 0, 'Холодные закуски', 'food');
 INSERT INTO menu_categories (restaurant_id, id, sort_order, title, menu_group) VALUES ('ekranidze', 'salads', 1, 'Салаты', 'food');
 INSERT INTO menu_categories (restaurant_id, id, sort_order, title, menu_group) VALUES ('ekranidze', 'khinkali', 2, 'Хинкали', 'food');
@@ -155,7 +158,9 @@ INSERT INTO menu_items (restaurant_id, id, category_id, sort_order, name, descri
 INSERT INTO restaurants (id, sort_order, path, name, short_label, logo_image, header_icon, tone, badge, hero_heading, hero_text, about_heading, rating_value, yandex_reviews_url, phone, phone_href, telegram, legal_info, is_placeholder) VALUES ('mama-hinkali', 1, '/mama-hinkali', 'Мама хинкали', 'Мама хинкали', '/logos/mama-hinkali-wordmark.png', '/logos/mama-hinkali-badge.png', 'olive', 'Москва, грузинская кухня', 'Хинкали, хачапури и грузинское застолье в Москве', 'Открываем точки в Москве — адреса и меню ниже. Раздел «О нас» и фотографии блюд пока в разработке.', 'Страница в разработке', '—', 'https://yandex.ru/maps/213/moscow/house/ulitsa_shukhova_21/37.608805,55.716351', '+7 499 455-66-21', 'tel:+74994556621', NULL, 'ИНН 9725187088 · ОГРН 1257700255823', 1);
 INSERT INTO restaurant_about_paragraphs (restaurant_id, sort_order, body) VALUES ('mama-hinkali', 0, 'Раздел «О нас» для «Мама хинкали» ещё не наполнен реальным текстом — это временная заглушка до получения материалов от клиента.');
 INSERT INTO restaurant_addresses (id, restaurant_id, sort_order, label, address_text, lon, lat, yandex_url) VALUES ('mama-hinkali-shukhova', 'mama-hinkali', 0, 'Работает', 'ул. Шухова, 21, Москва', 37.608805, 55.716351, 'https://yandex.ru/maps/213/moscow/house/ulitsa_shukhova_21/37.608805,55.716351');
+INSERT INTO address_metro_stations (address_id, sort_order, name, line) VALUES ('mama-hinkali-shukhova', 0, 'Шаболовка', 'orange');
 INSERT INTO restaurant_addresses (id, restaurant_id, sort_order, label, address_text, lon, lat, yandex_url) VALUES ('mama-hinkali-dukhovskoy', 'mama-hinkali', 1, 'Откроется позже', 'Духовской пер., 17с16, Москва', 37.616773, 55.704874, 'https://yandex.ru/maps/213/moscow/house/dukhovskoy_pereulok_17s16/Z04YcAZmTkIEQFtvfXtxdXRkYA==/');
+INSERT INTO address_metro_stations (address_id, sort_order, name, line) VALUES ('mama-hinkali-dukhovskoy', 0, 'Тульская', 'grey');
 INSERT INTO menu_categories (restaurant_id, id, sort_order, title, menu_group) VALUES ('mama-hinkali', 'cold', 0, 'Холодные закуски', 'food');
 INSERT INTO menu_categories (restaurant_id, id, sort_order, title, menu_group) VALUES ('mama-hinkali', 'salads', 1, 'Салаты', 'food');
 INSERT INTO menu_categories (restaurant_id, id, sort_order, title, menu_group) VALUES ('mama-hinkali', 'soups', 2, 'Супы', 'food');

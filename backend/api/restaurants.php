@@ -17,13 +17,16 @@ function fetch_restaurant(PDO $pdo, string $id): ?array
 
     $addr = $pdo->prepare('SELECT id, label, address_text AS addressText, lon, lat, yandex_url AS yandexUrl FROM restaurant_addresses WHERE restaurant_id = ? ORDER BY sort_order');
     $addr->execute([$id]);
-    $addresses = array_map(function ($a) {
+    $metroStmt = $pdo->prepare('SELECT name, line FROM address_metro_stations WHERE address_id = ? ORDER BY sort_order');
+    $addresses = array_map(function ($a) use ($metroStmt) {
         if ($a['lon'] !== null && $a['lat'] !== null) {
             $a['coords'] = [(float)$a['lon'], (float)$a['lat']];
         } else {
             $a['coords'] = null;
         }
         unset($a['lon'], $a['lat']);
+        $metroStmt->execute([$a['id']]);
+        $a['metro'] = $metroStmt->fetchAll();
         return $a;
     }, $addr->fetchAll());
 

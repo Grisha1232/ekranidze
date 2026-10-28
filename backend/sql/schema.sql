@@ -55,6 +55,15 @@ CREATE TABLE IF NOT EXISTS restaurant_addresses (
   FOREIGN KEY (restaurant_id) REFERENCES restaurants(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE IF NOT EXISTS address_metro_stations (
+  id            INT AUTO_INCREMENT PRIMARY KEY,
+  address_id    VARCHAR(100) NOT NULL,
+  sort_order    INT NOT NULL DEFAULT 0,
+  name          VARCHAR(100) NOT NULL,
+  line          ENUM('purple','orange','grey') NOT NULL, -- real Moscow Metro line color, not invented
+  FOREIGN KEY (address_id) REFERENCES restaurant_addresses(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE IF NOT EXISTS menu_categories (
   restaurant_id VARCHAR(50) NOT NULL,
   id            VARCHAR(100) NOT NULL,             -- unique within a restaurant, not globally

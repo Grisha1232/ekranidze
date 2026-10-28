@@ -1,5 +1,6 @@
 "use client";
 
+import { FoodFlyIn } from "@/components/FoodFlyIn";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { MenuSection } from "@/components/MenuSection";
@@ -34,6 +35,7 @@ export function RestaurantPage({ restaurant: initialRestaurant }: { restaurant: 
 
   return (
     <div className="flex min-h-screen flex-col">
+      <FoodFlyIn />
       <Header restaurant={restaurant} />
       {restaurant.isPlaceholder && (
         <div className="border-b border-border bg-background px-4 py-2 text-center text-xs text-muted-foreground sm:px-6">

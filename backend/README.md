@@ -24,9 +24,10 @@ points at that same shared instance rather than hosting its own copy.
   `admin/orders.php`, instead of vanishing.
 - `admin/` — session-login admin panel (single shared account) covering
   every editable field: hero/about/contacts text, amenities, addresses,
-  menu categories/items, free-form sections, and an orders list. The Hero
-  logo (`restaurant.php`) and dish photos (`menu.php`) can be uploaded as
-  files, not just pasted as a path — see `lib/uploads.php`.
+  menu categories/items, free-form sections, and an orders list. Every
+  image field (Hero logo, header icon in `restaurant.php`; dish photos,
+  including at creation time, in `menu.php`) can be uploaded as a file
+  instead of pasted as a path — see `lib/uploads.php`.
 - `lib/yandex_rating.php`, `cron/update_ratings.php` — scrapes each
   restaurant's real Yandex Maps org page (`restaurants.yandex_reviews_url`,
   also shown as the "отзывы" link) for its aggregate rating and writes it to
@@ -76,15 +77,17 @@ including the GitHub Pages build — the site falls back to the static data in
 `src/data/` with zero network calls, exactly like before this backend
 existed.
 
-Per-domain Timeweb deploy:
+Timeweb deploy — one build, rsynced to all four production domains
+(ekranidze.ru/.рф, mama-hinkali.ru/.рф): every domain's root now shows the
+same restaurant-picker (see `RestaurantChooser`), so there's no more
+per-domain `PRIMARY_RESTAURANT` build flag to vary.
 
 ```bash
-PRIMARY_RESTAURANT=ekranidze NEXT_PUBLIC_CONTENT_API_URL=http://ekranidze.ru/backend/api npm run build
-# move out/ aside, repeat with PRIMARY_RESTAURANT=mama-hinkali, then rsync
-# each build's out/ to its own ~/<restaurant>/public_html/ over SSH — see
-# the .htaccess rewrite rule already deployed there (Next's static export
-# writes both a route/ directory of RSC payloads *and* a route.html file for
-# the same path; the web server matches the directory first and 404s, so
+NEXT_PUBLIC_CONTENT_API_URL=https://ekranidze.ru/backend/api npm run build
+# rsync out/ to each domain's ~/<domain>/public_html/ over SSH — see the
+# .htaccess rewrite rule already deployed there (Next's static export writes
+# both a route/ directory of RSC payloads *and* a route.html file for the
+# same path; the web server matches the directory first and 404s, so
 # .htaccess rewrites extensionless paths to their .html sibling).
 ```
 

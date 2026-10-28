@@ -1,0 +1,24 @@
+# Apache's own directory-slash redirect (mod_dir) fires on a bare route
+# name before mod_rewrite's rules below ever run, since every route here
+# has a same-named directory (the RSC payload folder) — turning it off lets
+# the extensionless→.html rewrite below actually be reached.
+DirectorySlash Off
+
+RewriteEngine On
+
+# Принудительный https. На Timeweb SSL терминируется на nginx перед Apache,
+# поэтому стандартный %{HTTPS} всегда "off" здесь — проверяем через
+# заголовок от прокси.
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+# Next's static export writes both a route/ directory of RSC payloads *and*
+# a route.html file for the same path. Deliberately NOT excluding `-d`
+# matches here: every route has a same-named directory (the RSC payload
+# folder, no index.html inside it), so without this rewrite Apache's own
+# directory handling wins first — DirectorySlash redirects /route to
+# /route/ (over plain http, since Apache doesn't know nginx already
+# terminated TLS), then 403s since that directory has no index.html.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html [L]
