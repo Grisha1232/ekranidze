@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { CartButton } from "@/components/CartButton";
 import type { MetroStation, Restaurant } from "@/data/restaurants";
 import { withAssetVersion } from "@/lib/asset-version";
@@ -72,17 +72,21 @@ function MetroBadges({
 // size/zoom/screen width.
 export function Header({ restaurant }: { restaurant: Restaurant }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [chosenAddressId, setChosenAddressIdState] = useState<string | null>(null);
 
   useEffect(() => {
-    // One-time read of sessionStorage on mount — intentional, sessionStorage
-    // isn't readable during SSR so this can't be a lazy useState initializer.
-    // Renders restaurant-wide metro (the fallback below) until this runs,
-    // same safe pattern as elsewhere in this codebase.
+    // Re-reads sessionStorage on every pathname change, not just on mount —
+    // Next's router can restore a previously-rendered route (browser
+    // back/forward, or its own route cache) without actually remounting
+    // this component, so a mount-only effect could keep showing whichever
+    // address was picked *first* this session even after picking a
+    // different one later. sessionStorage isn't readable during SSR, so
+    // this can't be a lazy useState initializer either.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setChosenAddressIdState(getChosenAddressId());
-  }, []);
+  }, [pathname]);
 
   // A restaurant chosen with a specific address/card (e.g. Mama Khinkali's
   // Шаболовка vs Тульская) shows only that one's metro instead of every
