@@ -59,89 +59,41 @@ body {
   scroll-margin-top: 5rem;
 }
 
-/* Client's requested easter egg, on every restaurant-page open (any
-   restaurant, every time — not RestaurantChooser) — khinkali and khachapuri
-   burst outward from the center of the screen. See FoodFlyIn.tsx.
-   --tx/--ty/--rot are set per piece inline; only transform+opacity animate,
+/* Client's requested easter egg, on every restaurant-page open (both
+   restaurants, every time — not RestaurantChooser) — grapes and wine rain
+   down from the top of the screen. See FoodFlyIn.tsx for why grapes/wine
+   rather than khinkali/khachapuri emoji (there isn't a Unicode emoji that
+   actually reads as either dish — tried a few candidates on localhost,
+   client preferred grapes+wine over forcing a mismatched dumpling/flatbread
+   emoji). --rot is set per piece inline; only transform+opacity animate,
    which keeps this cheap to run even with many pieces on screen at once. */
-@keyframes food-burst {
+@keyframes food-rain {
   0% {
-    transform: translate(-50%, -50%) scale(0.15) rotate(0deg);
+    transform: translateY(-12vh) rotate(0deg);
     opacity: 0;
   }
-  16% {
+  8% {
     opacity: 1;
-    transform: translate(-50%, -50%)
-      translate(calc(var(--tx) * 0.2), calc(var(--ty) * 0.2)) scale(1.4)
-      rotate(calc(var(--rot) * 0.2));
+  }
+  92% {
+    opacity: 1;
   }
   100% {
-    transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(0.8)
-      rotate(var(--rot));
+    transform: translateY(115vh) rotate(var(--rot));
     opacity: 0;
   }
 }
 
-.animate-food-burst {
-  top: 50%;
-  left: 50%;
+.animate-food-rain {
+  top: 0;
   will-change: transform, opacity;
-  animation-name: food-burst;
-  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  animation-name: food-rain;
+  animation-timing-function: ease-in;
   animation-fill-mode: forwards;
 }
 
-/* The flash + shockwave give the burst an actual point of impact — without
-   them it reads as "things fly past" rather than "something just exploded
-   here." Both are quick (well under the particles' own duration) so they
-   read as the trigger, not part of the ongoing animation. */
-@keyframes food-flash {
-  0% {
-    opacity: 0.4;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-.animate-food-flash {
-  background: radial-gradient(
-    circle at center,
-    rgba(255, 250, 240, 0.95) 0%,
-    rgba(255, 250, 240, 0) 62%
-  );
-  animation: food-flash 0.5s ease-out forwards;
-}
-
-@keyframes food-shockwave {
-  0% {
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 0.6;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0;
-  }
-}
-
-.animate-food-shockwave {
-  top: 50%;
-  left: 50%;
-  width: 70vmin;
-  height: 70vmin;
-  border-radius: 9999px;
-  background: radial-gradient(
-    circle,
-    rgba(176, 138, 94, 0.55) 0%,
-    rgba(176, 138, 94, 0) 70%
-  );
-  animation: food-shockwave 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .animate-food-burst,
-  .animate-food-flash,
-  .animate-food-shockwave {
+  .animate-food-rain {
     animation: none;
     opacity: 0;
   }
