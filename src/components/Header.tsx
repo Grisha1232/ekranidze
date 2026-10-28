@@ -59,6 +59,16 @@ function MetroBadges({
 // The panel is a small anchored dropdown under the hamburger button (left
 // side), not a full-width bar — a backdrop behind it closes it on an
 // outside click.
+//
+// The center column is `minmax(0,auto)`, not plain `auto` — a plain `auto`
+// track sizes to its content's full width with no upper bound, so a long
+// admin-edited name (e.g. "кафе грузинской кухни «Экранидзе»") just
+// overflowed into the hamburger/cart columns instead of wrapping. With the
+// 0 floor the column can actually be squeezed down to the space the other
+// two columns leave it, which is what lets the name wrap onto a second line
+// there instead of overlapping neighboring controls. Wrapping by width
+// (rather than a hardcoded character count) keeps working across any font
+// size/zoom/screen width.
 export function Header({ restaurant }: { restaurant: Restaurant }) {
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -72,7 +82,7 @@ export function Header({ restaurant }: { restaurant: Restaurant }) {
 
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background/90 backdrop-blur">
-      <div className="relative mx-auto grid max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-3 px-4 py-4 sm:px-6">
+      <div className="relative mx-auto grid max-w-6xl grid-cols-[1fr_minmax(0,auto)_1fr] items-center gap-3 px-4 py-4 sm:px-6">
         <div className="flex items-center justify-self-start">
           <button
             type="button"
@@ -94,17 +104,17 @@ export function Header({ restaurant }: { restaurant: Restaurant }) {
         </div>
 
         <div className="flex min-w-0 flex-col items-center justify-self-center gap-1.5">
-          <div className="flex min-w-0 items-center gap-2">
+          <div className="flex min-w-0 items-start gap-2">
             {restaurant.headerIcon && (
               <Image
                 src={`${BASE_PATH}${restaurant.headerIcon}`}
                 alt=""
                 width={28}
                 height={28}
-                className="shrink-0 rounded-full"
+                className="mt-0.5 shrink-0 rounded-full"
               />
             )}
-            <span className="truncate font-georgian text-xl font-semibold text-foreground">
+            <span className="min-w-0 text-center font-georgian text-xl font-semibold leading-snug text-foreground">
               {restaurant.name}
             </span>
           </div>
