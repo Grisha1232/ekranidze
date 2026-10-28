@@ -9,6 +9,7 @@ import type { Restaurant, RestaurantAddress } from "@/data/restaurants";
 import { BASE_PATH } from "@/lib/base-path";
 import { METRO_LINE_COLORS } from "@/lib/metro";
 import { getChosenRestaurantId, setChosenRestaurantId } from "@/lib/restaurant-choice";
+import { RESTAURANT_PRIMARY_ORIGIN } from "@/lib/restaurant-domains";
 
 // A restaurant with more than one address (currently "Мама хинкали") shows
 // one card per address rather than one card for the restaurant — the client
@@ -49,6 +50,27 @@ export function RestaurantChooser() {
 
   const choose = (id: string, path: string) => {
     setChosenRestaurantId(id);
+
+    // Cross-domain: if the chooser was opened on the OTHER restaurant's own
+    // domain (e.g. picking "Экранидзе" while on mama-hinkali.ru), send the
+    // visitor to that restaurant's own domain instead of rendering it under
+    // the wrong brand's URL — a full navigation, since a client-side route
+    // change can't cross origins. Only acts when the current host is one of
+    // the known restaurant domains; any other host (localhost, GitHub
+    // Pages, a .рф alias) just navigates normally.
+    const targetOrigin = RESTAURANT_PRIMARY_ORIGIN[id];
+    const currentOrigin = window.location.origin;
+    const onKnownRestaurantDomain =
+      Object.values(RESTAURANT_PRIMARY_ORIGIN).includes(currentOrigin);
+    if (targetOrigin && onKnownRestaurantDomain && currentOrigin !== targetOrigin) {
+      // Deliberate: the target is a different registrable domain entirely
+      // (ekranidze.ru vs mama-hinkali.ru), not an internal route — router.push
+      // can't cross origins, so a full navigation is the only option here.
+      // eslint-disable-next-line react-hooks/immutability, @next/next/no-location-assign-relative-destination
+      window.location.href = `${targetOrigin}${path}`;
+      return;
+    }
+
     router.push(`${BASE_PATH}${path}`);
   };
 
