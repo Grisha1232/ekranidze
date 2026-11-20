@@ -8,7 +8,12 @@ import type { MetroStation, Restaurant } from "@/data/restaurants";
 import { withAssetVersion } from "@/lib/asset-version";
 import { BASE_PATH } from "@/lib/base-path";
 import { METRO_LINE_COLORS } from "@/lib/metro";
-import { clearChosenRestaurant, getChosenAddressId } from "@/lib/restaurant-choice";
+import {
+  CHOSEN_ADDRESS_PARAM,
+  clearChosenRestaurant,
+  getChosenAddressId,
+  setChosenRestaurant,
+} from "@/lib/restaurant-choice";
 
 const NAV_LINKS = [
   { href: "#menu", label: "Меню" },
@@ -77,6 +82,14 @@ export function Header({ restaurant }: { restaurant: Restaurant }) {
   const [chosenAddressId, setChosenAddressIdState] = useState<string | null>(null);
 
   useEffect(() => {
+    const url = new URL(window.location.href);
+    const transferredAddressId = url.searchParams.get(CHOSEN_ADDRESS_PARAM);
+    if (transferredAddressId && restaurant.addresses.some((a) => a.id === transferredAddressId)) {
+      setChosenRestaurant(restaurant.id, transferredAddressId);
+      url.searchParams.delete(CHOSEN_ADDRESS_PARAM);
+      window.history.replaceState(null, "", url);
+    }
+
     // Re-reads sessionStorage on every pathname change, not just on mount —
     // Next's router can restore a previously-rendered route (browser
     // back/forward, or its own route cache) without actually remounting
@@ -86,7 +99,7 @@ export function Header({ restaurant }: { restaurant: Restaurant }) {
     // this can't be a lazy useState initializer either.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setChosenAddressIdState(getChosenAddressId());
-  }, [pathname]);
+  }, [pathname, restaurant.id, restaurant.addresses]);
 
   // A restaurant chosen with a specific address/card (e.g. Mama Khinkali's
   // Шаболовка vs Тульская) shows only that one's metro instead of every

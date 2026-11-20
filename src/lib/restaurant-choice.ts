@@ -6,6 +6,7 @@
 // on them.
 const CHOSEN_RESTAURANT_KEY = "khinkali-dom:chosen-restaurant";
 const CHOSEN_ADDRESS_KEY = "khinkali-dom:chosen-address";
+export const CHOSEN_ADDRESS_PARAM = "address";
 
 export function getChosenRestaurantId(): string | null {
   return sessionStorage.getItem(CHOSEN_RESTAURANT_KEY);

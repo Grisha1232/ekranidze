@@ -9,7 +9,11 @@ import type { Restaurant, RestaurantAddress } from "@/data/restaurants";
 import { withAssetVersion } from "@/lib/asset-version";
 import { BASE_PATH } from "@/lib/base-path";
 import { METRO_LINE_COLORS } from "@/lib/metro";
-import { getChosenRestaurantId, setChosenRestaurant } from "@/lib/restaurant-choice";
+import {
+  CHOSEN_ADDRESS_PARAM,
+  getChosenRestaurantId,
+  setChosenRestaurant,
+} from "@/lib/restaurant-choice";
 import { normalizeOrigin, RESTAURANT_PRIMARY_ORIGIN } from "@/lib/restaurant-domains";
 
 // A restaurant with more than one address (currently "Мама хинкали") shows
@@ -50,8 +54,6 @@ export function RestaurantChooser() {
   }, [router, restaurants]);
 
   const choose = (id: string, path: string, addressId?: string) => {
-    setChosenRestaurant(id, addressId);
-
     // Cross-domain: if the chooser was opened on the OTHER restaurant's own
     // domain (e.g. picking "Экранидзе" while on mama-hinkali.ru), send the
     // visitor to that restaurant's own domain instead of rendering it under
@@ -64,14 +66,18 @@ export function RestaurantChooser() {
     const onKnownRestaurantDomain =
       Object.values(RESTAURANT_PRIMARY_ORIGIN).includes(currentOrigin);
     if (targetOrigin && onKnownRestaurantDomain && currentOrigin !== targetOrigin) {
+      const destination = new URL(path, targetOrigin);
+      // sessionStorage is scoped to the origin, so pass the address to the destination.
+      if (addressId) destination.searchParams.set(CHOSEN_ADDRESS_PARAM, addressId);
       // Deliberate: the target is a different registrable domain entirely
       // (ekranidze.ru vs mama-hinkali.ru), not an internal route — router.push
       // can't cross origins, so a full navigation is the only option here.
-      // eslint-disable-next-line react-hooks/immutability, @next/next/no-location-assign-relative-destination
-      window.location.href = `${targetOrigin}${path}`;
+      // eslint-disable-next-line react-hooks/immutability
+      window.location.href = destination.href;
       return;
     }
 
+    setChosenRestaurant(id, addressId);
     router.push(`${BASE_PATH}${path}`);
   };
 
